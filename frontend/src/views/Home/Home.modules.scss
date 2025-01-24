@@ -1,0 +1,47 @@
+/* reset.scss */
+
+/* 1. 清除所有元素的内外边距 */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;  // 保证 padding 和 border 不影响元素的大小
+}
+
+/* 2. 清除所有链接的默认样式 */
+a {
+  text-decoration: none;
+  color: inherit;  // 继承父元素的颜色
+}
+
+/* 3. 清除列表项的默认样式 */
+ul,
+ol {
+  list-style: none;
+}
+
+/* 4. 清除图片的默认样式 */
+img {
+  max-width: 100%;  // 防止图片超出父容器
+  display: block;   // 让图片不再占用额外的空间
+}
+
+/* 5. 清除表单元素的默认样式 */
+input,
+button,
+select,
+textarea {
+  border: none;
+  outline: none;
+  background: none;
+}
+
+/* 6. 清除字体样式 */
+body,
+html {
+  font-family: Arial, sans-serif;  // 设定统一的字体
+  font-size: 16px;
+  line-height: 1.5;
+  background: none;  // 防止背景色影响
+}

@@ -1,0 +1,22 @@
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+logs/
+
+# 环境配置文件
+.env
+
+# IntelliJ IDEA 配置文件
+.idea/
+
+# Node.js / React 相关
+node_modules/
+dist/
+build/
+
+# 其他临时文件
+*.tmp
+*.bak
