@@ -1,19 +1,15 @@
-//body {
-//  margin: 0;
-//  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-//    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-//    sans-serif;
-//  -webkit-font-smoothing: antialiased;
-//  -moz-osx-font-smoothing: grayscale;
-//}
-//
-//code {
-//  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-//    monospace;
-//}
+/* 在全局样式中（例如 index.css 或 App.css）设置 */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto; /* 显示滚动条 */
+  background-color: rgb(240, 242, 245);
+  font-family: 'Jost', sans-serif;
+}
 
-body{
-  div{
-    color: red;
-  }
+#root {
+  min-width: 1200px; /* 确保内容宽度至少为视口宽度 */
+  display: flex;
+  flex-direction: column;
 }

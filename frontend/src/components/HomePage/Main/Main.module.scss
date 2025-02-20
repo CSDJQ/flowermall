@@ -1,0 +1,74 @@
+.guide {
+  height: 60vh;
+  width: calc((100% - 4vh)/4);
+  h4{
+    margin: 0;
+  }
+  p:hover{
+    cursor:pointer;
+    text-decoration: underline;
+    color:#1677ff;
+  }
+}
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.columns p {
+  flex: 1 0 45%; /* 这里的 45% 是为了让两列之间有一些间隙，避免完全填满宽度 */
+  margin: 5px; /* 可选：为每个项目添加一些外边距 */
+}
+
+.exguide {
+  height: 60vh;
+  width: calc(3*(100% - 4vh)/4);
+
+  .exguideTop , .exguideBottom {
+    width: 100%;
+    height: 50%;
+    display: flex;
+
+    .card1{
+      height:100%;
+      width: calc(50% - 2vh);
+      margin-left: 2vh;
+    }
+
+    .exguideBottomLeft{
+      width: calc(100%/3);
+      .card2{
+        height: calc(50% - 2vh);
+        margin-top: 2vh;
+        margin-left: 2vh;
+      }
+    }
+    .exguideBottomMiddle{
+      width: calc(100%/3);
+      height: calc(100% - 2vh);
+
+      .card3{
+        height: 100%;
+        margin-top: 2vh;
+        margin-left: 2vh;
+      }
+
+    }
+    .exguideBottomRight{
+      width: calc(100%/3);
+      height: calc(100% - 2vh);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      .card5{
+        width: calc(50% - 2vh);
+        height: calc(50% - 1vh);
+        margin-top: 2vh;
+        margin-left: 2vh;
+      }
+    }
+
+  }
+}
