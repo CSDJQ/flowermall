@@ -1,16 +1,21 @@
-//package com.backend.maydelete;
-//
-//import lombok.Data;
-//import java.sql.Timestamp;
-//
-//@Data
-//public class Category {
-//    private Integer id;
-//    private Integer flowerId;
-//    private String mainFlower;
-//    private String purpose;
-//    private String colorScheme;
-//    private Integer stemCount;
-//    private Timestamp createdAt;
-//    private Timestamp updatedAt;
-//}
+package com.backend.pojo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Category {
+    private Integer categoryId;
+    private Integer flowerId;
+    private String mainFlower;
+    private String purpose;
+    private String colorScheme;
+    private Integer stemCount;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+}

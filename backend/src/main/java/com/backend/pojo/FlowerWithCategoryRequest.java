@@ -1,10 +1,15 @@
 package com.backend.pojo;
 
 import java.sql.Timestamp;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class Flower {
+@NoArgsConstructor
+@AllArgsConstructor
+public class FlowerWithCategoryRequest {
     private Integer categoryId;
     private String name;
     private String description;

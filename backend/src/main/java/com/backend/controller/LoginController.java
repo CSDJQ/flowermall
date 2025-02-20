@@ -28,12 +28,12 @@ public class LoginController {
         if(c !=null){
             Map<String,Object> claims = new HashMap<>();
             claims.put("id",c.getCusId());
-            claims.put("username",c.getUsername());
-            claims.put("password",c.getPassword());
+            claims.put("phone",c.getPhone());
+//            claims.put("password",c.getPassword());
             String jwt = JwtUtils.generateJwt(claims);
             return Result.success(jwt);
         }
-        return Result.error("用户名或密码错误");
+        return Result.error("手机号或密码错误");
     }
 
     @PostMapping("/signup")

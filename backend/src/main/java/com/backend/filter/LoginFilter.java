@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 import java.io.IOException;
 
 @Component
@@ -30,7 +29,12 @@ public class LoginFilter implements Filter {
             return;
         }
 
-        String jwt = req.getHeader("token");
+        String jwt = null; // 初始化jwt变量为null
+        String authHeader = req.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            // 移除"Bearer "前缀并获取JWT
+            jwt = authHeader.substring(7);
+        }
 
         if(!StringUtils.hasLength(jwt)) {
             log.info("JWT: {}", jwt);

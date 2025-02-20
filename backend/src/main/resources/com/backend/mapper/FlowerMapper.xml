@@ -5,7 +5,7 @@
 <mapper namespace="com.backend.mapper.FlowerMapper">
 
     <!-- 插入flower记录并返回自增ID -->
-    <insert id="insertFlower" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertFlower" useGeneratedKeys="true" keyProperty="flowerId">
         INSERT INTO flower (name, description, original_price, discount_price, is_on_sale, created_at, updated_at)
         VALUES (#{name}, #{description}, #{originalPrice}, #{discountPrice}, #{isOnSale}, NOW(), NOW())
     </insert>

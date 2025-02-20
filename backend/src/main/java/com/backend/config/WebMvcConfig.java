@@ -8,8 +8,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("http://localhost:3000") // React 前端的地址
+//                .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                .allowedHeaders("*");
+
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // React 前端的地址
+                .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }
