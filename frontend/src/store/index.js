@@ -1,8 +1,8 @@
-// 组合redux子模块，导出store实例
-
-import {configureStore} from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import cusReducer from "./modules/cus";
 
 export default configureStore({
-    reducer: cusReducer,
-})
+    reducer: {
+        cus: cusReducer, // 将 cusReducer 挂载到 cus 键下
+    },
+});

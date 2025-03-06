@@ -2,7 +2,7 @@ import style from './Login.module.scss';
 import {Button, Form, Input, Space} from 'antd';
 import {fetchLogin,fetchSignup} from "../../apis/loginAndSignup";
 import {useDispatch} from "react-redux";
-import {setToken} from "../../store/modules/cus";
+import {setRole, setToken} from "../../store/modules/cus";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 

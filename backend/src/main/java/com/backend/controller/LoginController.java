@@ -16,22 +16,31 @@ import java.util.Map;
 @RestController
 @Slf4j
 public class LoginController {
+    String ADMINPHONE = "12345678910";
+
     @Autowired
     private CusService cusService;
 
     @PostMapping("/login")
     public Result login(@RequestBody Cus cus) {
-        log.info("登录请求，request:{}",cus);
+        log.info("登录请求，request:{}", cus);
 
         Cus c = cusService.login(cus);
 
-        if(c !=null){
-            Map<String,Object> claims = new HashMap<>();
-            claims.put("id",c.getCusId());
-            claims.put("phone",c.getPhone());
-//            claims.put("password",c.getPassword());
+        if (c != null) {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", c.getCusId());
+            claims.put("phone", c.getPhone());
+
+            // 判断是否是管理员
+            boolean isAdmin = ADMINPHONE.equals(c.getPhone());
+            claims.put("isAdmin", isAdmin); // 将角色信息添加到 JWT
+
             String jwt = JwtUtils.generateJwt(claims);
-            return Result.success(jwt);
+
+            log.info("response: {}", jwt);
+
+            return Result.success(jwt); // 使用 Result.success 返回
         }
         return Result.error("手机号或密码错误");
     }

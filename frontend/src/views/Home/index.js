@@ -7,7 +7,6 @@ import Main from "../../components/HomePage/Main";
 const Home = () => {
     return (
         <>
-            <TopBar></TopBar>
             <div className={style.container}>
                 <SwiperItem></SwiperItem>
             </div>
