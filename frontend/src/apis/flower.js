@@ -17,17 +17,29 @@ export const getFlowers = async () => {
 
 // 删除鲜花
 export const deleteFlower = async (flowerId) => {
-    return request.delete(`/flowers/${flowerId}`);
+    const res = await request.delete(`/flowers/${flowerId}`);
+    if (res.code === 200){return true;}
+    else return false;
 };
 
 // 添加鲜花
 export const addFlower = async (flowerWithCategory) => {
-    return request.post('/flowers', flowerWithCategory);
+    return await request.post('/flowers', flowerWithCategory);
 };
 
-// 更新鲜花
 export const updateFlower = async (flower) => {
-    return request.put('/flowers', flower);
+    try {
+        const res = await request.put('/flowers', flower); // 使用 await 等待请求完成
+        console.log('更新鲜花响应:', res); // 调试日志
+        if (res.code === 200) { // 判断请求是否成功
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('更新鲜花失败:', error); // 调试日志
+        return false; // 请求失败时返回 false
+    }
 };
 
 export const updateCategory = async (flowerId) => {

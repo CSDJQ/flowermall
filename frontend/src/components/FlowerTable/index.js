@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Popconfirm, message, Input, Space, Modal, Form, InputNumber, Switch, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { getFlowers, deleteFlower, addFlower, updateFlower, getCategory, updateCategory } from '@/apis/flower';
+import { Table, Button, Popconfirm, message, Input, Space } from 'antd';
+import { getFlowers, deleteFlower, updateFlower, getCategory, updateCategory } from '@/apis/flower';
+import FlowerForm from '@/components/FlowerForm';
+import CategoryForm from '@/components/CategoryForm';
 
-const FlowerTable = () => {
+const FlowerTable = ({ onSubmit }) => {
     const [flowers, setFlowers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchText, setSearchText] = useState('');
@@ -11,8 +12,6 @@ const FlowerTable = () => {
     const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
     const [currentFlower, setCurrentFlower] = useState(null);
     const [currentCategory, setCurrentCategory] = useState(null);
-    const [formFlower] = Form.useForm();
-    const [formCategory] = Form.useForm();
 
     // 获取鲜花数据
     const fetchFlowers = async () => {
@@ -30,10 +29,12 @@ const FlowerTable = () => {
     // 删除鲜花
     const handleDelete = async (flowerId) => {
         try {
-            console.log(flowerId);
-            await deleteFlower(flowerId);
-            message.success('删除成功');
-            fetchFlowers();
+            const res = await deleteFlower(flowerId);
+            if(res) {
+                message.success('删除成功');
+                fetchFlowers();
+            }
+            else message.error('删除失败');
         } catch (error) {
             message.error('删除失败');
         }
@@ -43,31 +44,20 @@ const FlowerTable = () => {
     const handleAdd = () => {
         setCurrentFlower(null);
         setCurrentCategory(null);
-        formFlower.resetFields();
-        formCategory.resetFields();
         setIsFlowerModalVisible(true);
     };
 
     // 打开编辑鲜花模态框
     const handleEditFlower = (flower) => {
         setCurrentFlower(flower);
-        formFlower.setFieldsValue({
-            ...flower,
-        });
         setIsFlowerModalVisible(true);
     };
 
     // 打开编辑种类模态框
     const handleEditCategory = async (flower) => {
         try {
-            const category = await getCategory(flower.flowerId); // 获取分类信息
+            const category = await getCategory(flower.flowerId);
             setCurrentCategory(category);
-            formCategory.setFieldsValue({
-                mainFlower: category.mainFlower,
-                purpose: category.purpose,
-                colorScheme: category.colorScheme,
-                stemCount: category.stemCount,
-            });
             setIsCategoryModalVisible(true);
         } catch (error) {
             message.error('获取分类信息失败');
@@ -75,40 +65,32 @@ const FlowerTable = () => {
     };
 
     // 提交鲜花表单（添加或编辑）
-    const handleFlowerSubmit = async () => {
+    const handleFlowerSubmit = async (values) => {
         try {
-            const values = await formFlower.validateFields();
-
             if (currentFlower) {
                 // 编辑鲜花
-                await updateFlower({ id: currentFlower.id, ...values });
-                message.success('鲜花信息更新成功');
+                const res = await updateFlower({ flowerId: currentFlower.flowerId, ...values });
+                console.log('编辑鲜花结果:', res); // 调试日志
+                if (res) { // 根据 updateFlower 的返回值判断是否成功
+                    message.success('鲜花信息更新成功');
+                } else {
+                    message.error('操作失败');
+                }
             } else {
                 // 添加鲜花
-                const categoryValues = await formCategory.validateFields();
-                const flowerData = {
-                    ...values,
-                    category: {
-                        ...categoryValues,
-                    },
-                };
-                await addFlower(flowerData);
-                message.success('鲜花添加成功');
+                await onSubmit(values);
             }
-
-            setIsFlowerModalVisible(false);
-            fetchFlowers();
+            setIsFlowerModalVisible(false); // 关闭模态框
+            fetchFlowers(); // 刷新鲜花数据
         } catch (error) {
+            console.error('操作失败:', error); // 调试日志
             message.error('操作失败');
         }
     };
 
     // 提交种类表单
-    const handleCategorySubmit = async () => {
+    const handleCategorySubmit = async (values) => {
         try {
-            const values = await formCategory.validateFields();
-
-            // 更新分类信息
             await updateCategory({ flowerId: currentCategory.flowerId, ...values });
             message.success('种类信息更新成功');
             setIsCategoryModalVisible(false);
@@ -125,58 +107,20 @@ const FlowerTable = () => {
 
     // 表格列定义
     const columns = [
-        {
-            title: '鲜花ID',
-            dataIndex: 'flowerId',
-            key: 'flowerId',
-        },
-        {
-            title: '鲜花名称',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '描述',
-            dataIndex: 'description',
-            key: 'description',
-            render: (text) => text,
-        },
-        {
-            title: '原价',
-            dataIndex: 'originalPrice',
-            key: 'originalPrice',
-            render: (text) => `￥${text}`||'',
-        },
-        {
-            title: '折后价',
-            dataIndex: 'discountPrice',
-            key: 'discountPrice',
-            render: (text) =>(text ? `￥${text}` : ''),
-        },
-        {
-            title: '是否在售',
-            dataIndex: 'isOnSale',
-            key: 'isOnSale',
-            render: (text) => (text ? '是' : '否'),
-        },
+        { title: '鲜花ID', dataIndex: 'flowerId', key: 'flowerId' },
+        { title: '鲜花名称', dataIndex: 'name', key: 'name' },
+        { title: '描述', dataIndex: 'description', key: 'description', render: (text) => text },
+        { title: '原价', dataIndex: 'originalPrice', key: 'originalPrice', render: (text) => `￥${text}` || '' },
+        { title: '折后价', dataIndex: 'discountPrice', key: 'discountPrice', render: (text) => (text ? `￥${text}` : '') },
+        { title: '是否在售', dataIndex: 'isOnSale', key: 'isOnSale', render: (text) => (text ? '是' : '否') },
         {
             title: '图片',
             dataIndex: 'imageUrl',
             key: 'imageUrl',
             render: (text) => (text ? <img src={text} alt="鲜花图片" style={{ width: 50, height: 50 }} /> : '默认图片'),
         },
-        {
-            title: '创建时间',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            render: (text) => new Date(text).toLocaleString(),
-        },
-        {
-            title: '更新时间',
-            dataIndex: 'updatedAt',
-            key: 'updatedAt',
-            render: (text) => new Date(text).toLocaleString(),
-        },
+        { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', render: (text) => new Date(text).toLocaleString() },
+        { title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt', render: (text) => new Date(text).toLocaleString() },
         {
             title: '编辑种类',
             key: 'editCategory',
@@ -189,7 +133,7 @@ const FlowerTable = () => {
             key: 'action',
             render: (_, record) => (
                 <Space>
-                    <Button type="link" onClick={() => handleEditFlower(record)}>编辑</Button>
+                    <Button type="link" onClick={() => handleEditFlower(record)}>编辑信息</Button>
                     <Popconfirm
                         title="确定删除吗？"
                         onConfirm={() => handleDelete(record.flowerId)}
@@ -231,91 +175,20 @@ const FlowerTable = () => {
             />
 
             {/* 添加/编辑鲜花模态框 */}
-            <Modal
-                title={currentFlower ? '编辑鲜花' : '添加鲜花'}
-                open={isFlowerModalVisible}
-                onOk={handleFlowerSubmit}
+            <FlowerForm
+                visible={isFlowerModalVisible}
                 onCancel={() => setIsFlowerModalVisible(false)}
-            >
-                <Form form={formFlower} layout="vertical">
-                    <Form.Item name="name" label="鲜花名称" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="description" label="描述">
-                        <Input.TextArea />
-                    </Form.Item>
-                    <Form.Item name="originalPrice" label="原价" rules={[{ required: true }]}>
-                        <InputNumber min={0} style={{ width: '100%' }} />
-                    </Form.Item>
-                    <Form.Item name="discountPrice" label="折后价">
-                        <InputNumber min={0} style={{ width: '100%' }} />
-                    </Form.Item>
-                    <Form.Item name="isOnSale" label="是否在售" valuePropName="checked">
-                        <Switch />
-                    </Form.Item>
-                    <Form.Item name="imageUrl" label="图片">
-                        <Upload
-                            action="https://your-cos-upload-endpoint"
-                            listType="picture"
-                            maxCount={1}
-                            onChange={(info) => {
-                                if (info.file.status === 'done') {
-                                    formFlower.setFieldsValue({ imageUrl: info.file.response.url });
-                                }
-                            }}
-                        >
-                            <Button icon={<UploadOutlined />}>上传图片</Button>
-                        </Upload>
-
-
-                        <Upload action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload" directory>
-                            <Button icon={<UploadOutlined />}>上传图片</Button>
-                        </Upload>
-
-
-
-                    </Form.Item>
-                    {!currentFlower && (
-                        <>
-                            <Form.Item name="mainFlower" label="主花">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item name="purpose" label="用途">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item name="colorScheme" label="色系">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item name="stemCount" label="支数">
-                                <InputNumber min={0} style={{ width: '100%' }} />
-                            </Form.Item>
-                        </>
-                    )}
-                </Form>
-            </Modal>
+                onSubmit={handleFlowerSubmit}
+                currentFlower={currentFlower}
+            />
 
             {/* 编辑种类模态框 */}
-            <Modal
-                title="编辑种类"
-                open={isCategoryModalVisible}
-                onOk={handleCategorySubmit}
+            <CategoryForm
+                visible={isCategoryModalVisible}
                 onCancel={() => setIsCategoryModalVisible(false)}
-            >
-                <Form form={formCategory} layout="vertical">
-                    <Form.Item name="mainFlower" label="主花" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="purpose" label="用途" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="colorScheme" label="色系" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="stemCount" label="支数" rules={[{ required: true }]}>
-                        <InputNumber min={0} style={{ width: '100%' }} />
-                    </Form.Item>
-                </Form>
-            </Modal>
+                onSubmit={handleCategorySubmit}
+                currentCategory={currentCategory}
+            />
         </div>
     );
 };
