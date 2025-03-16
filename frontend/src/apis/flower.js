@@ -1,51 +1,38 @@
-import {request} from "../utils";
+import { request } from '@/utils';
 
-/**
- * 获取鲜花详情
- * @param {number} id - 鲜花 ID
- * @returns {Promise} - 返回鲜花详情
- */
-export const fetchFlowerDetail = async (id) => {
-    try {
-        const response = await request.get(`/flower/${id}`);
-        return response;
-    } catch (error) {
-        console.error('获取鲜花详情失败:', error);
-        throw error;
-    }
+// // 上传图片
+// export const uploadImage = async (formData) => {
+//     return request.post('/upload', formData, {
+//         headers: {
+//             'Content-Type': 'multipart/form-data',
+//         },
+//     });
+// };
+
+
+// 获取所有鲜花
+export const getFlowers = async () => {
+    return request.get('/flowers');
 };
 
-/**
- * 更新鲜花信息
- * @param {number} id - 鲜花 ID
- * @param {Object} values - 更新的鲜花信息
- * @returns {Promise} - 返回更新结果
- */
-export const updateFlower = async (id, values) => {
-    try {
-        const response = await request.put(`/flower/${id}`, values);
-        return response;
-    } catch (error) {
-        console.error('更新鲜花信息失败:', error);
-        throw error;
-    }
+// 删除鲜花
+export const deleteFlower = async (flowerId) => {
+    return request.delete(`/flowers/${flowerId}`);
 };
 
-/**
- * 上传图片
- * @param {FormData} formData - 包含图片文件的 FormData
- * @returns {Promise} - 返回图片 URL
- */
-export const uploadImage = async (formData) => {
-    try {
-        const response = await request.post('/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        return response;
-    } catch (error) {
-        console.error('图片上传失败:', error);
-        throw error;
-    }
+// 添加鲜花
+export const addFlower = async (flowerWithCategory) => {
+    return request.post('/flowers', flowerWithCategory);
 };
+
+// 更新鲜花
+export const updateFlower = async (flower) => {
+    return request.put('/flowers', flower);
+};
+
+export const updateCategory = async (flowerId) => {
+
+}
+export const getCategory = async (flowerId) => {
+
+}

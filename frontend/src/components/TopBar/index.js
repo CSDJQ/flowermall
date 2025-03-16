@@ -12,7 +12,7 @@ import {useSelector} from "react-redux";
 import { jwtDecode } from 'jwt-decode';
 const baseItems = [
     {
-        key: 'home',
+        key: '',
         label: '首页',
         icon: <HomeOutlined />,
     },
@@ -49,7 +49,7 @@ const baseItems = [
 
 const TopBar = () => {
     const navigate = useNavigate();
-    const [current, setCurrent] = useState('home');
+    const [current, setCurrent] = useState('');
     const [menuItems, setMenuItems] = useState([]);
     const token = useSelector((state) => state.cus.token);
     const role = token ? jwtDecode(token).isAdmin : false;

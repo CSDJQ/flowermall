@@ -5,15 +5,16 @@ import Home from "@/views/Home";
 import {AuthRoute} from "@/components/AuthRoute";
 import CategoryPage from "@/components/CategoryPage";
 import MyLayout from "@/components/MyLayout";
-import AdminEdit from "../components/AdminEdit";
+import AdminEdit from "../views/AdminEdit";
+import Exit from "../views/Exit";
 
 const router = createBrowserRouter([
     {
-        path: '/',
+        path: '/login',
         element: <Login />,
     },
     {
-        path: '/home',
+        path: '',
         element: <AuthRoute><MyLayout /></AuthRoute>, // 确保在 Layout 上包裹 AuthRoute 来保护整个 /home 路由
         children: [
             {
@@ -24,11 +25,15 @@ const router = createBrowserRouter([
                 path: 'category/:parentKey/:childKey',
                 element: <CategoryPage />
             },
+            {
+                path: 'adminEdit',
+                element: <AdminEdit />,
+            },
+            {
+                path: 'exit',
+                element: <Exit />,
+            },
         ]
-    },
-    {
-        path: '/adminEdit',
-        element: <AdminEdit />,
     },
 ])
 

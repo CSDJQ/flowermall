@@ -13,5 +13,5 @@ public interface FlowerService {
     public boolean updateFlower(Category category);
     public Category getCategoryByFlowerId(Integer flowerId);
 //    public FlowerWithCategoryRequest getFlowerById(Integer id);
-//    public List<FlowerWithCategoryRequest> getAllFlowers();
+    public List<Flower> getAllFlowers();
 }

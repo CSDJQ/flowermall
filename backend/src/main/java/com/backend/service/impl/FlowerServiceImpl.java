@@ -25,7 +25,7 @@ public class FlowerServiceImpl implements FlowerService {
     // 添加商品
     public int addFlower(FlowerWithCategoryRequest request) {
         // 插入 flower 表
-        Flower flower = new Flower(0,request.getName(),request.getDescription(),request.getOriginalPrice(),request.getDiscountPrice(),request.getIsOnSale(),null,null);
+        Flower flower = new Flower(0,request.getName(),request.getDescription(),request.getOriginalPrice(),request.getDiscountPrice(),request.getIsOnSale(),request.getImageUrl(),null,null);
         flowerMapper.insertFlower(flower);
 
         // 获取生成的 flower_id
@@ -73,7 +73,7 @@ public class FlowerServiceImpl implements FlowerService {
 //        return flowerMapper.getFlowerById(id);
 //    }
 //
-//    public List<FlowerWithCategoryRequest> getAllFlowers() {
-//        return flowerMapper.getAllFlowers();
-//    }
+    public List<Flower> getAllFlowers() {
+        return flowerMapper.getAllFlowers();
+    }
 }

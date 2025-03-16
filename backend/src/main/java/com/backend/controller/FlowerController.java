@@ -59,8 +59,8 @@ public class FlowerController {
 //        return flowerService.getFlowerById(id);
 //    }
 //
-//    @GetMapping
-//    public List<FlowerWithCategoryRequest> getAllFlowers() {
-//        return flowerService.getAllFlowers();
-//    }
+    @GetMapping
+    public List<Flower> getAllFlowers() {
+        return flowerService.getAllFlowers();
+    }
 }

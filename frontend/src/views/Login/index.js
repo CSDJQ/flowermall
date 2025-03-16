@@ -2,7 +2,7 @@ import style from './Login.module.scss';
 import {Button, Form, Input, Space} from 'antd';
 import {fetchLogin,fetchSignup} from "../../apis/loginAndSignup";
 import {useDispatch} from "react-redux";
-import {setRole, setToken} from "../../store/modules/cus";
+import {setToken} from "../../store/modules/cus";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
@@ -43,8 +43,8 @@ const Login = () => {
             // 登录成功后跳转页面
             dispatch(setToken(result.data));
             console.log(result.data);
-              // 跳转到 "/home" 页面
-            navigate('/home');
+              // 跳转到 默认首页
+            navigate('/');
         } else {
             // 请求失败，显示错误信息
             const errorMsg = result.errorMsg;

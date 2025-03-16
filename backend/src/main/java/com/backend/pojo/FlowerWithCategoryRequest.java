@@ -16,6 +16,7 @@ public class FlowerWithCategoryRequest {
     private Double originalPrice;
     private Double discountPrice;
     private Boolean isOnSale;
+    private String imageUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Integer flowerId;

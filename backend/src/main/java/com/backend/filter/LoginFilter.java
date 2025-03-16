@@ -23,7 +23,13 @@ public class LoginFilter implements Filter {
         String url = req.getRequestURI().toString();
         log.info("URL: {}", url);
 
-        if(url.equals("/login")||url.equals("/signup")) {
+        // 允许 OPTIONS 请求通过
+        if (req.getMethod().equals("OPTIONS")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (url.equals("/login") || url.equals("/signup")) {
             log.info("Login or signup");
             chain.doFilter(request, response);
             return;
@@ -36,16 +42,16 @@ public class LoginFilter implements Filter {
             jwt = authHeader.substring(7);
         }
 
-        if(!StringUtils.hasLength(jwt)) {
+        if (!StringUtils.hasLength(jwt)) {
             log.info("JWT: {}", jwt);
             Result error = Result.error("NOT_LOGIN");
             String notLogin = JSONObject.toJSONString(error);
             res.getWriter().write(notLogin);
             return;
         }
-        try{
+        try {
             JwtUtils.parseJWT(jwt);
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             log.info("解析令牌失败");
             Result error = Result.error("NOT_LOGIN");

@@ -16,6 +16,7 @@ public class Flower {
     private Double originalPrice;
     private Double discountPrice;
     private Boolean isOnSale;
+    private String imageUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }

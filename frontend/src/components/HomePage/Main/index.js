@@ -76,7 +76,7 @@ const Main = () => {
 
     const handleCategoryClick = (parentKey, childKey) => {
         console.log(`Parent Key: ${parentKey}, Child Key: ${childKey}`);
-        navigate(`/home/category/${parentKey}/${childKey}`); // 跳转到分类页面
+        navigate(`/category/${parentKey}/${childKey}`); // 跳转到分类页面
     };
 
     return (
