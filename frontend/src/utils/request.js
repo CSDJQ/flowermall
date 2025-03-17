@@ -26,6 +26,10 @@ request.interceptors.response.use( (response) => {
     }
     return response.data;
 },(error) => {
+    if (error.response && error.response.status === 401) {
+        // Token 无效或过期，跳转到登录界面
+        window.location.href = "/login";
+    }
     return Promise.reject(error);
 })
 

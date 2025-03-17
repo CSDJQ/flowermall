@@ -1,4 +1,4 @@
-import {setToken} from "../../store/modules/cus";
+import { setToken } from "@/store/modules/cus";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 
