@@ -91,10 +91,11 @@ const FlowerTable = ({ onSubmit }) => {
     // 提交种类表单
     const handleCategorySubmit = async (values) => {
         try {
-            await updateCategory({ flowerId: currentCategory.flowerId, ...values });
-            message.success('种类信息更新成功');
+            console.log(values);
+            const res = await updateCategory(values);
+            if(res)message.success('种类信息更新成功');
+            else message.error('更新失败');
             setIsCategoryModalVisible(false);
-            fetchFlowers();
         } catch (error) {
             message.error('操作失败');
         }

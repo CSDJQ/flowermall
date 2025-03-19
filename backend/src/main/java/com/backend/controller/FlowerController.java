@@ -43,24 +43,23 @@ public class FlowerController {
         return Result.error("修改失败，对象不存在");
     }
 
+    @GetMapping
+    public List<Flower> getAllFlowers() {
+        return flowerService.getAllFlowers();
+    }
+
     @PutMapping("/category")
-    public Result updateFlower(@RequestBody Category category) {
-        Category oldCate = flowerService.getCategoryByFlowerId(category.getFlowerId());
-        category.setCategoryId(oldCate.getCategoryId());
-        boolean ifupdate = flowerService.updateFlower(category);
+    public Result updateCategory(@RequestBody Category category) {
+        log.info(category.toString());
+        boolean ifupdate = flowerService.updateCategory(category);
         if (ifupdate) {
             return Result.success("修改成功");
         }
         return Result.error("修改失败，对象不存在");
     }
 
-//    @GetMapping("/{id}")
-//    public FlowerWithCategoryRequest getFlowerById(@PathVariable Integer id) {
-//        return flowerService.getFlowerById(id);
-//    }
-//
-    @GetMapping
-    public List<Flower> getAllFlowers() {
-        return flowerService.getAllFlowers();
+    @GetMapping("/category/{id}")
+    public Category getCategoryByCategoryId(@PathVariable Integer id) {
+        return flowerService.getCategoryByCategoryId(id);
     }
 }

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Modal, Form, InputNumber, Input } from 'antd';
 
 const CategoryForm = ({ visible, onCancel, onSubmit, currentCategory }) => {
     const [form] = Form.useForm();
 
     // 初始化表单值
-    React.useEffect(() => {
+    useEffect(() => {
         if (currentCategory) {
             form.setFieldsValue(currentCategory);
         } else {
@@ -16,7 +16,7 @@ const CategoryForm = ({ visible, onCancel, onSubmit, currentCategory }) => {
     const handleSubmit = async () => {
         try {
             const values = await form.validateFields();
-            onSubmit(values);
+            onSubmit({categoryId: currentCategory.categoryId, ...values});
         } catch (error) {
             console.error('表单验证失败', error);
         }

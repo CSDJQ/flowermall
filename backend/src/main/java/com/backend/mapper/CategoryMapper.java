@@ -14,11 +14,11 @@ public interface CategoryMapper {
     @Delete("DELETE FROM category WHERE category_id = #{categoryId}")
     void deleteCategoryById(Integer category_id);
 
-    @Update("UPDATE category SET flower_id = #{flowerId}, main_flower = #{mainFlower}, purpose = #{purpose}, color_scheme = #{colorScheme}, stem_count = #{stemCount}, updated_at = NOW() WHERE category_id = #{categoryId}")
+    @Update("UPDATE category SET main_flower = #{mainFlower}, purpose = #{purpose}, color_scheme = #{colorScheme}, stem_count = #{stemCount}, updated_at = NOW() WHERE category_id = #{categoryId}")
     void updateCategory(Category category);
 
     @Select("SELECT * FROM category WHERE category_id = #{categoryId}")
-    Category getCategoryById(Integer category_id);
+    Category getCategoryByCategoryId(Integer category_id);
 
     @Select("SELECT * FROM category")
     List<Category> getAllCategories();

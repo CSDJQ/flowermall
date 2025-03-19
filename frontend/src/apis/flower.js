@@ -42,9 +42,25 @@ export const updateFlower = async (flower) => {
     }
 };
 
-export const updateCategory = async (flowerId) => {
-
-}
+export const updateCategory = async (category) => {
+    try {
+        const res = await request.put('/flowers/category', category);
+        console.log('更新分类响应:', category);
+        if (res.code === 200) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('更新分类失败:', error);
+        return false;
+    }
+};
 export const getCategory = async (flowerId) => {
-
+    try {
+        return request.get(`/flowers/category/${flowerId}`);
+    } catch (error) {
+        console.error('更新分类失败:', error);
+        return false;
+    }
 }

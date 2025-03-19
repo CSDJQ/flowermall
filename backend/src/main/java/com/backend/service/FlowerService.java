@@ -10,8 +10,7 @@ public interface FlowerService {
     public int addFlower(FlowerWithCategoryRequest flower);
     public boolean deleteFlower(Integer flowerId);
     public boolean updateFlower(Flower flower);
-    public boolean updateFlower(Category category);
-    public Category getCategoryByFlowerId(Integer flowerId);
-//    public FlowerWithCategoryRequest getFlowerById(Integer id);
+    public boolean updateCategory(Category category);
+    public Category getCategoryByCategoryId(Integer flowerId);
     public List<Flower> getAllFlowers();
 }

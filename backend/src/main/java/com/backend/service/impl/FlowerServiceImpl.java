@@ -56,17 +56,17 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     // 修改分类信息
-    public boolean updateFlower(Category category) {
-        if(categoryMapper.getCategoryById(category.getCategoryId()) == null) {
+    public boolean updateCategory(Category category) {
+        if(categoryMapper.getCategoryByCategoryId(category.getCategoryId()) == null) {
             return false;
         }
         categoryMapper.updateCategory(category);
         return true;
     }
 
-    // 以商品ID查询分类
-    public Category getCategoryByFlowerId(Integer flowerId) {
-        return categoryMapper.getCategoryByFlowerId(flowerId);
+    // 以种类ID查询分类
+    public Category getCategoryByCategoryId(Integer categoryId) {
+        return categoryMapper.getCategoryByCategoryId(categoryId);
     }
 
 //    public FlowerWithCategoryRequest getFlowerById(Integer id) {
