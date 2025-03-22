@@ -29,16 +29,16 @@ export const addFlower = async (flowerWithCategory) => {
 
 export const updateFlower = async (flower) => {
     try {
-        const res = await request.put('/flowers', flower); // 使用 await 等待请求完成
-        console.log('更新鲜花响应:', res); // 调试日志
-        if (res.code === 200) { // 判断请求是否成功
+        const res = await request.put('/flowers', flower);
+        console.log('更新鲜花响应:', res);
+        if (res.code === 200) {
             return true;
         } else {
             return false;
         }
     } catch (error) {
-        console.error('更新鲜花失败:', error); // 调试日志
-        return false; // 请求失败时返回 false
+        console.error('更新鲜花失败:', error);
+        return false;
     }
 };
 
@@ -63,4 +63,8 @@ export const getCategory = async (flowerId) => {
         console.error('更新分类失败:', error);
         return false;
     }
+}
+
+export const getFlowersByCategory = async (type, value) => {
+    return request.get('/user/flowers/byCategory', { params: { type, value } })
 }

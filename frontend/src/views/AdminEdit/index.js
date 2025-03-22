@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, message } from 'antd';
+import { message } from 'antd';
 import { addFlower } from '@/apis/flower';
 import FlowerTable from "@/components/FlowerTable";
 import style from "./AdminEdit.module.scss";

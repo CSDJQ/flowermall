@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import { Layout, Menu, Card, Row, Col } from 'antd';
+import {Layout, Menu, Card, Row, Col, Button, Image} from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import style from './CategoryPage.module.scss';
 import {useParams} from "react-router-dom";
+import {request} from "@/utils"
+import {addFlower, getFlowersByCategory} from "../../apis/flower";
 
 const { Sider, Content } = Layout;
 
-// 示例数据
 const guideContents = [
     {
         key: 'purpose',
@@ -96,6 +97,7 @@ const levelKeys = getLevelKeys(guideContents);
 const CategoryPage = () => {
     const [activeItem, setActiveItem] = useState(null);
     const [stateOpenKeys, setStateOpenKeys] = useState(['1']);
+    const [flowerList, setFlowerList] = useState([]); // 存储商品列表
 
     // 处理菜单展开/收起
     const onOpenChange = (openKeys) => {
@@ -108,9 +110,7 @@ const CategoryPage = () => {
                 .findIndex((key) => levelKeys[key] === levelKeys[currentOpenKey]);
             setStateOpenKeys(
                 openKeys
-                    // remove repeat key
                     .filter((_, index) => index !== repeatIndex)
-                    // remove current level all child
                     .filter((key) => levelKeys[key] <= levelKeys[currentOpenKey]),
             );
         } else {
@@ -120,8 +120,16 @@ const CategoryPage = () => {
     };
 
     // 选择子项
-    const handleItemClick = (item) => {
+    const handleItemClick = async (item) => {
         setActiveItem(item.key);
+        console.log(stateOpenKeys);
+        const type = stateOpenKeys[0];
+        const value = item.key;
+        const response = await getFlowersByCategory(type,value);
+        console.log(response.data); // 打印分组后的商品数据
+        setFlowerList(response.data);
+        // 后端请求按照本分类方式分的列表，前端进行切片
+        // console.log(response);
     };
     const { parentKey,childKey } = useParams();
     // 监听路由参数变化，更新状态
@@ -133,9 +141,266 @@ const CategoryPage = () => {
             handleItemClick({key: childKey});
         }
     }, [parentKey, childKey]);
+
+    // 批量添加商品
+    const handle = async () => {
+        const flowers = [
+            {
+                "name": "阳光玫瑰",
+                "description": "红色玫瑰",
+                "originalPrice": 100.0,
+                "discountPrice": 80.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "红玫瑰",
+                "purpose": "爱情鲜花",
+                "colorScheme": "红色",
+                "stemCount": 12
+            },
+            {
+                "name": "白玫瑰",
+                "description": "白色玫瑰",
+                "originalPrice": 120.0,
+                "discountPrice": null,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "白玫瑰",
+                "purpose": "友情鲜花",
+                "colorScheme": "白色",
+                "stemCount": 6
+            },
+            {
+                "name": "香槟玫瑰",
+                "description": "香槟色玫瑰",
+                "originalPrice": 150.0,
+                "discountPrice": 130.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "香槟玫瑰",
+                "purpose": "爱情鲜花",
+                "colorScheme": "香槟",
+                "stemCount": 11
+            },
+            {
+                "name": "康乃馨",
+                "description": "粉色康乃馨",
+                "originalPrice": 80.0,
+                "discountPrice": 70.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "康乃馨",
+                "purpose": "长辈亲戚",
+                "colorScheme": "粉色",
+                "stemCount": 9
+            },
+            {
+                "name": "百合",
+                "description": "白色百合",
+                "originalPrice": 90.0,
+                "discountPrice": null,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "百合",
+                "purpose": "师恩难忘",
+                "colorScheme": "白色",
+                "stemCount": 19
+            },
+            {
+                "name": "向日葵",
+                "description": "黄色向日葵",
+                "originalPrice": 70.0,
+                "discountPrice": 60.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "向日葵",
+                "purpose": "祝贺鲜花",
+                "colorScheme": "黄色",
+                "stemCount": 33
+            },
+            {
+                "name": "绣球花",
+                "description": "蓝色绣球花",
+                "originalPrice": 110.0,
+                "discountPrice": 100.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "绣球花",
+                "purpose": "商务桌花",
+                "colorScheme": "蓝色",
+                "stemCount": 52
+            },
+            {
+                "name": "红玫瑰",
+                "description": "经典红玫瑰",
+                "originalPrice": 100.0,
+                "discountPrice": 90.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "红玫瑰",
+                "purpose": "爱情鲜花",
+                "colorScheme": "红色",
+                "stemCount": 66
+            },
+            {
+                "name": "粉玫瑰",
+                "description": "粉色玫瑰",
+                "originalPrice": 110.0,
+                "discountPrice": null,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "粉玫瑰",
+                "purpose": "友情鲜花",
+                "colorScheme": "粉色",
+                "stemCount": 99
+            },
+            {
+                "name": "紫玫瑰",
+                "description": "紫色玫瑰",
+                "originalPrice": 130.0,
+                "discountPrice": 120.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "紫玫瑰",
+                "purpose": "哀思鲜花",
+                "colorScheme": "紫色",
+                "stemCount": 199
+            },
+            {
+                "name": "绿玫瑰",
+                "description": "绿色玫瑰",
+                "originalPrice": 140.0,
+                "discountPrice": 130.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "其他",
+                "purpose": "商务桌花",
+                "colorScheme": "绿色",
+                "stemCount": 6
+            },
+            {
+                "name": "蓝玫瑰",
+                "description": "蓝色玫瑰",
+                "originalPrice": 150.0,
+                "discountPrice": 140.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "其他",
+                "purpose": "爱情鲜花",
+                "colorScheme": "蓝色",
+                "stemCount": 11
+            },
+            {
+                "name": "黄玫瑰",
+                "description": "黄色玫瑰",
+                "originalPrice": 120.0,
+                "discountPrice": 110.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "其他",
+                "purpose": "友情鲜花",
+                "colorScheme": "黄色",
+                "stemCount": 19
+            },
+            {
+                "name": "红康乃馨",
+                "description": "红色康乃馨",
+                "originalPrice": 85.0,
+                "discountPrice": 75.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "康乃馨",
+                "purpose": "长辈亲戚",
+                "colorScheme": "红色",
+                "stemCount": 9
+            },
+            {
+                "name": "粉康乃馨",
+                "description": "粉色康乃馨",
+                "originalPrice": 90.0,
+                "discountPrice": 80.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "康乃馨",
+                "purpose": "长辈亲戚",
+                "colorScheme": "粉色",
+                "stemCount": 11
+            },
+            {
+                "name": "白康乃馨",
+                "description": "白色康乃馨",
+                "originalPrice": 95.0,
+                "discountPrice": 85.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "康乃馨",
+                "purpose": "长辈亲戚",
+                "colorScheme": "白色",
+                "stemCount": 19
+            },
+            {
+                "name": "紫百合",
+                "description": "紫色百合",
+                "originalPrice": 100.0,
+                "discountPrice": 90.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "百合",
+                "purpose": "师恩难忘",
+                "colorScheme": "紫色",
+                "stemCount": 33
+            },
+            {
+                "name": "黄百合",
+                "description": "黄色百合",
+                "originalPrice": 110.0,
+                "discountPrice": 100.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "百合",
+                "purpose": "祝贺鲜花",
+                "colorScheme": "黄色",
+                "stemCount": 52
+            },
+            {
+                "name": "粉百合",
+                "description": "粉色百合",
+                "originalPrice": 120.0,
+                "discountPrice": 110.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "百合",
+                "purpose": "友情鲜花",
+                "colorScheme": "粉色",
+                "stemCount": 66
+            },
+            {
+                "name": "红绣球花",
+                "description": "红色绣球花",
+                "originalPrice": 130.0,
+                "discountPrice": 120.0,
+                "isOnSale": true,
+                "imageUrl": null,
+                "mainFlower": "绣球花",
+                "purpose": "商务桌花",
+                "colorScheme": "红色",
+                "stemCount": 99
+            }
+        ];
+
+        for (const flower of flowers) {
+            try {
+                const response = await addFlower(flower);
+                console.log('添加成功:', response.data);
+            } catch (error) {
+                console.error('添加失败:', error);
+            }
+        }
+    };
+
     return (
         <div className={style.container}>
             <Layout style={{ minHeight: '100vh' }}>
+                <Button onClick={handle}>批量添加商品</Button>
                 {/* 侧边栏 */}
                 <Sider width={240} style={{ background: '#fff' }}>
                     <Menu
@@ -159,21 +424,42 @@ const CategoryPage = () => {
                             background: '#fff',
                         }}
                     >
-                        <h2>商品查看</h2>
-                        {activeItem ? (
+                        <h2>{activeItem}</h2>
+                        {flowerList.length > 0 ? (
                             <Row gutter={16}>
-                                <Col span={8}>
-                                    <Card
-                                        title={activeItem}
-                                        bordered={false}
-                                        style={{ width: 300 }}
-                                    >
-                                        <p>这里是选中商品的详细描述...</p>
-                                    </Card>
-                                </Col>
+                                {flowerList.map((flower) => (
+                                    <Col key={flower.flowerId} span={8} style={{ marginBottom: 16 }}>
+                                        <Card
+                                            className={style.flowerCard}
+                                            hoverable
+                                            cover={
+                                                <Image
+                                                    alt={flower.name}
+                                                    src={flower.imageUrl || 'https://via.placeholder.com/150'}
+                                                    className={style.flowerImage}
+                                                />
+                                            }
+                                        >
+                                            <div className={style.flowerInfo}>
+                                                <h3>{flower.name}</h3>
+                                                <div className={style.price}>
+                                                    {flower.discountPrice ? (
+                                                        <>
+                                                            <span className={style.discountPrice}>¥{flower.discountPrice}</span>
+                                                            <span className={style.originalPrice}>¥{flower.originalPrice}</span>
+                                                        </>
+                                                    ) : (
+                                                        <span>¥{flower.originalPrice}</span>
+                                                    )}
+                                                </div>
+                                                <p className={style.description}>{flower.description}</p>
+                                            </div>
+                                        </Card>
+                                    </Col>
+                                ))}
                             </Row>
                         ) : (
-                            <p>请选择一个商品。</p>
+                            <p>请选择一个类别</p>
                         )}
                     </Content>
                 </Layout>

@@ -1,10 +1,69 @@
-:global {
-
-}
-.container{
-  margin:20px auto;
+.container {
+  margin: 20px auto;
   width: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.flowerCard {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #40a9ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    .flowerImage {
+      transform: scale(1.1);
+    }
+
+    .flowerInfo {
+      color: #40a9ff;
+    }
+  }
+}
+
+.flowerImage {
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.flowerInfo {
+  text-align: center;
+  height: 80px;
+
+  h3 {
+    margin: 0 0 3px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .price {
+    margin-bottom: 3px;
+
+    .discountPrice {
+      font-size: 18px;
+      color: #ff4d4f;
+      font-weight: bold;
+    }
+
+    .originalPrice {
+      font-size: 14px;
+      color: #999;
+      text-decoration: line-through;
+      margin-left: 8px;
+    }
+  }
+
+  .description {
+    margin: 0;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* 单行截断 */
+  }
 }

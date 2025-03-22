@@ -7,6 +7,7 @@ import CategoryPage from "@/components/CategoryPage";
 import MyLayout from "@/components/MyLayout";
 import AdminEdit from "../views/AdminEdit";
 import Exit from "../views/Exit";
+import Chat from "../components/Chat";
 
 const router = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
                 path: 'exit',
                 element: <Exit />,
             },
+            {
+                path: 'chat',
+                element:<Chat></Chat>
+            }
         ]
     },
 ])
