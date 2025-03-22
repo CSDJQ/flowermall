@@ -1,6 +1,8 @@
 package com.backend.exception;
 
 import com.backend.pojo.Result;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,4 +13,5 @@ public class GlobalExceptionHandler {
         ex.printStackTrace();
         return Result.error("操作失败，请联系管理员");
     }
+
 }

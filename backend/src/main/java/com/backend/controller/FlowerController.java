@@ -2,7 +2,7 @@ package com.backend.controller;
 
 import com.backend.pojo.Category;
 import com.backend.pojo.Flower;
-import com.backend.pojo.FlowerWithCategoryRequest;
+import com.backend.pojo.FlowerWithCategory;
 import com.backend.pojo.Result;
 import com.backend.service.FlowerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class FlowerController {
     private FlowerService flowerService;
 
     @PostMapping
-    public Result addFlower(@RequestBody FlowerWithCategoryRequest flower) {
+    public Result addFlower(@RequestBody FlowerWithCategory flower) {
         log.info(flower.toString());
         int flowerId = flowerService.addFlower(flower);
         return Result.success(flowerId);

@@ -98,6 +98,17 @@
 			<artifactId>jaxb-runtime</artifactId>
 			<version>2.3.1</version>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>jakarta.xml.bind</groupId>-->
+<!--			<artifactId>jakarta.xml.bind-api</artifactId>-->
+<!--			<version>4.0.1</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.glassfish.jaxb</groupId>-->
+<!--			<artifactId>jaxb-runtime</artifactId>-->
+<!--			<version>4.0.5</version>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
 
 		<!-- FastJSON: 用于快速处理 JSON 的库，提供高效的 JSON 序列化与反序列化 -->
 		<dependency>
@@ -117,6 +128,28 @@
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-data-redis</artifactId>-->
 <!--		</dependency>-->
+
+		<!-- 重试机制 -->
+		<dependency>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>com.qcloud</groupId>-->
+<!--			<artifactId>cos_api</artifactId>-->
+<!--			<version>5.6.89</version>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>com.tencentcloudapi</groupId>
+			<artifactId>tencentcloud-sdk-java</artifactId>
+			<version>3.1.422</version>
+		</dependency>
 
 	</dependencies>
 

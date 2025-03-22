@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlowerWithCategoryRequest {
+public class FlowerWithCategory {
     private Integer categoryId;
     private String name;
     private String description;

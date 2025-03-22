@@ -4,13 +4,16 @@ import com.backend.mapper.CategoryMapper;
 import com.backend.mapper.FlowerMapper;
 import com.backend.pojo.Category;
 import com.backend.pojo.Flower;
-import com.backend.pojo.FlowerWithCategoryRequest;
+import com.backend.pojo.FlowerWithCategory;
 import com.backend.service.FlowerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FlowerServiceImpl implements FlowerService {
@@ -23,7 +26,7 @@ public class FlowerServiceImpl implements FlowerService {
     @Transactional // 确保事务一致性
     @Override
     // 添加商品
-    public int addFlower(FlowerWithCategoryRequest request) {
+    public int addFlower(FlowerWithCategory request) {
         // 插入 flower 表
         Flower flower = new Flower(0,request.getName(),request.getDescription(),request.getOriginalPrice(),request.getDiscountPrice(),request.getIsOnSale(),request.getImageUrl(),null,null);
         flowerMapper.insertFlower(flower);
@@ -69,11 +72,17 @@ public class FlowerServiceImpl implements FlowerService {
         return categoryMapper.getCategoryByCategoryId(categoryId);
     }
 
-//    public FlowerWithCategoryRequest getFlowerById(Integer id) {
-//        return flowerMapper.getFlowerById(id);
-//    }
-//
     public List<Flower> getAllFlowers() {
         return flowerMapper.getAllFlowers();
+    }
+
+    // 获取分类值列表
+    public List<String> getCategoryValues(String type) {
+        return flowerMapper.selectCategoryValues(type);
+    }
+
+    // 根据分类类型和值查询商品
+    public List<FlowerWithCategory> getFlowersByCategory(String type, String value) {
+        return flowerMapper.selectFlowersByCategory(type, value);
     }
 }

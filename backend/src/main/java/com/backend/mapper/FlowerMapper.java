@@ -2,6 +2,7 @@ package com.backend.mapper;
 
 import com.backend.pojo.Flower;
 //import org.apache.ibatis.annotations.*;
+import com.backend.pojo.FlowerWithCategory;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -22,4 +23,12 @@ public interface FlowerMapper {
 
     @Select("SELECT * FROM flower")
     List<Flower> getAllFlowers();
+
+    List<String> selectCategoryValues(String type);
+
+    List<FlowerWithCategory> selectFlowersByCategory(
+            @Param("type") String type,
+            @Param("value") String value);
+
+    List<FlowerWithCategory> selectAllFlowersWithCategory();
 }

@@ -10,4 +10,62 @@
         VALUES (#{name}, #{description}, #{originalPrice}, #{discountPrice}, #{isOnSale}, NOW(), NOW(),#{imageUrl})
     </insert>
 
+    <!-- 获取分类值列表 -->
+    <select id="selectCategoryValues" resultType="java.lang.String">
+        SELECT DISTINCT
+        <choose>
+            <when test="type == 'mainFlower'">
+                main_flower
+            </when>
+            <when test="type == 'purpose'">
+                purpose
+            </when>
+            <when test="type == 'colorScheme'">
+                color_scheme
+            </when>
+            <when test="type == 'stemCount'">
+                stem_count
+            </when>
+        </choose>
+        FROM category
+    </select>
+
+    <!-- 按分类查询商品 -->
+    <select id="selectFlowersByCategory" resultType="com.backend.pojo.FlowerWithCategory">
+        SELECT
+        f.flower_id,
+        f.name,
+        f.description,
+        f.original_price,
+        f.discount_price,
+        f.is_on_sale,
+        f.image_url,
+        f.created_at,
+        f.updated_at,
+        c.main_flower,
+        c.purpose,
+        c.color_scheme,
+        c.stem_count,
+        c.category_id
+        FROM flower f
+        JOIN category c ON f.flower_id = c.flower_id
+        WHERE
+        <choose>
+            <when test="type == 'mainFlower'">
+                c.main_flower = #{value}
+            </when>
+            <when test="type == 'purpose'">
+                c.purpose = #{value}
+            </when>
+            <when test="type == 'colorScheme'">
+                c.color_scheme = #{value}
+            </when>
+            <when test="type == 'stemCount'">
+                c.stem_count = #{value}
+            </when>
+            <otherwise>
+                1=1
+            </otherwise>
+        </choose>
+    </select>
 </mapper>
