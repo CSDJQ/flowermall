@@ -30,5 +30,5 @@ public interface FlowerMapper {
             @Param("type") String type,
             @Param("value") String value);
 
-    List<FlowerWithCategory> selectAllFlowersWithCategory();
+//    List<FlowerWithCategory> selectAllFlowersWithCategory();
 }

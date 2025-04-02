@@ -1,0 +1,32 @@
+.container {
+  width: 80%;
+  margin: 20px auto;
+
+  .sectionCard {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+
+    .securityForm {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .submitButton {
+      margin-top: 16px;
+      width: 120px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 12px;
+
+    .sectionCard {
+      padding: 16px;
+    }
+  }
+}

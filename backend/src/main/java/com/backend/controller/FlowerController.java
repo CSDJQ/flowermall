@@ -58,8 +58,10 @@ public class FlowerController {
         return Result.error("修改失败，对象不存在");
     }
 
-    @GetMapping("/category/{id}")
-    public Category getCategoryByCategoryId(@PathVariable Integer id) {
-        return flowerService.getCategoryByCategoryId(id);
+    // 查询某商品分类
+    @GetMapping("/category/{flowerId}")
+    public Category getCategoryByFlowerId(@PathVariable Integer flowerId) {
+        log.info("查找某商品分类：id={}",flowerId);
+        return flowerService.getCategoryByFlowerId(flowerId);
     }
 }

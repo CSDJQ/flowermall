@@ -1,49 +1,47 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import COS from 'cos-js-sdk-v5';
 import { request } from '@/utils';
 
-const ImageUploader = ({ onUploadSuccess }) => {
+const ImageUploader = ({ onUploadSuccess, initialImage }) => {
     const [uploading, setUploading] = useState(false);
     const [cosClient, setCosClient] = useState(null);
+    const [currentImage, setCurrentImage] = useState(initialImage); // 管理当前显示的图片
+
+    // 当初始图片变化时更新当前图片
+    useEffect(() => {
+        setCurrentImage(initialImage);
+    }, [initialImage]);
 
     // 初始化 COS 客户端
     const initCosClient = async () => {
         try {
-            const response = await request.get('/sts/token'); // 调用后端接口获取临时密钥
-
-            // 检查返回的数据格式
+            const response = await request.get('/sts/token');
             if (!response || !response.credentials) {
                 throw new Error('返回的数据格式不正确');
             }
 
-            const { credentials } = response; // 解构 credentials
+            const { credentials } = response;
             const client = new COS({
                 getAuthorization: (options, callback) => {
                     callback({
                         TmpSecretId: credentials.tmpSecretId,
                         TmpSecretKey: credentials.tmpSecretKey,
-                        SecurityToken: credentials.token, // 注意字段名是 token
-                        StartTime: Math.floor(Date.now() / 1000), // 当前时间戳（秒）
-                        ExpiredTime: response.expiredTime, // 过期时间
+                        SecurityToken: credentials.token,
+                        StartTime: Math.floor(Date.now() / 1000),
+                        ExpiredTime: response.expiredTime,
                     });
                 },
             });
             setCosClient(client);
-            return client; // 返回初始化后的 COS 客户端
+            return client;
         } catch (error) {
             console.error('获取临时密钥失败', error);
             message.error('获取临时密钥失败，请稍后重试');
             return null;
         }
     };
-
-    useEffect(() => {
-        if (cosClient) {
-            console.log('COS Client is ready:', cosClient);
-        }
-    }, [cosClient]);
 
     const handleUpload = async (file) => {
         setUploading(true);
@@ -56,7 +54,7 @@ const ImageUploader = ({ onUploadSuccess }) => {
             return false;
         }
 
-        const key = `flowers/${Date.now()}_${file.name}`; // 生成唯一的文件名
+        const key = `flowers/${Date.now()}_${file.name}`;
         client.putObject(
             {
                 Bucket: 'flower-1346990013',
@@ -74,25 +72,37 @@ const ImageUploader = ({ onUploadSuccess }) => {
                     message.error('上传失败，请稍后重试');
                 } else {
                     const imageUrl = `https://${data.Location}`;
-                    onUploadSuccess(imageUrl); // 将上传成功的图片 URL 传递给父组件
+                    setCurrentImage(imageUrl); // 更新当前显示的图片
+                    onUploadSuccess(imageUrl); // 通知父组件
                     message.success('上传成功');
                 }
             }
         );
-        return false; // 阻止默认上传行为
+        return false;
     };
 
     return (
-        <Upload
-            beforeUpload={handleUpload}
-            listType="picture"
-            maxCount={1}
-            showUploadList={false}
-        >
-            <Button icon={<UploadOutlined />} loading={uploading}>
-                上传图片
-            </Button>
-        </Upload>
+        <div>
+            <Upload
+                beforeUpload={handleUpload}
+                listType="picture"
+                maxCount={1}
+                showUploadList={false}
+            >
+                <Button icon={<UploadOutlined />} loading={uploading}>
+                    上传图片
+                </Button>
+            </Upload>
+            {currentImage && ( // 显示当前图片
+                <div style={{ marginTop: 16 }}>
+                    <img
+                        src={currentImage}
+                        alt="当前图片"
+                        style={{ maxWidth: '100%', maxHeight: 200 }}
+                    />
+                </div>
+            )}
+        </div>
     );
 };
 

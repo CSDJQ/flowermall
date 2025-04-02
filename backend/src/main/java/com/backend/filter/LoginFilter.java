@@ -19,65 +19,66 @@ import java.util.Set;
 @WebFilter(urlPatterns = "/*")
 public class LoginFilter implements Filter {
 
-    private static final Set<String> ALLOWED_PATHS = Set.of("/login", "/signup");
+    private static final Set<String> ALLOWED_PATHS = Set.of(
+            "/login",
+            "/signup",
+            "/api/token/validate" // 放行token验证接口
+    );
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        String url = req.getRequestURI().toString();
-        log.info("Request URL: {}, Method: {}", url, req.getMethod());
+        String method = req.getMethod();
+        String url = req.getRequestURI();
 
-        // 设置 CORS 头
-        res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-
-        // 允许 OPTIONS 请求通过
-        if (req.getMethod().equals("OPTIONS")) {
+        // 1. 放行OPTIONS预检请求
+        if ("OPTIONS".equalsIgnoreCase(method)) {
             chain.doFilter(request, response);
             return;
         }
 
-        // 如果请求路径在允许列表中，直接放行
-        if (ALLOWED_PATHS.contains(url)) {
-            log.info("允许的路径: {}", url);
+        // 2. 放行白名单路径
+        if (ALLOWED_PATHS.stream().anyMatch(url::startsWith)) {
             chain.doFilter(request, response);
             return;
         }
 
-        // 其他逻辑保持不变
-        String jwt = null; // 初始化jwt变量为null
+        // 3. JWT验证
+        String jwt = extractJwt(req);
+        if (!validateJwt(jwt, res)) {
+            return;
+        }
+
+        chain.doFilter(request, response);
+    }
+
+    private String extractJwt(HttpServletRequest req) {
         String authHeader = req.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            // 移除"Bearer "前缀并获取JWT
-            jwt = authHeader.substring(7);
+        return (authHeader != null && authHeader.startsWith("Bearer ")) ?
+                authHeader.substring(7) : null;
+    }
+
+    private boolean validateJwt(String jwt, HttpServletResponse res) throws IOException {
+        if (!StringUtils.hasLength(jwt)) {
+            sendError(res, "NOT_LOGIN");
+            return false;
         }
 
-        if (!StringUtils.hasLength(jwt)) {
-            log.info("JWT: {}", jwt);
-            Result error = Result.error("NOT_LOGIN");
-            String notLogin = JSONObject.toJSONString(error);
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 返回 401 状态码
-            res.setContentType("application/json;charset=UTF-8");
-            res.getWriter().write(notLogin);
-            return;
-        }
         try {
             JwtUtils.parseJWT(jwt);
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            log.info("解析令牌失败");
-            Result error = Result.error("NOT_LOGIN");
-            String notLogin = JSONObject.toJSONString(error);
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 返回 401 状态码
-            res.setContentType("application/json;charset=UTF-8");
-            res.getWriter().write(notLogin);
-            return;
+            log.error("JWT验证失败", e);
+            sendError(res, "INVALID_TOKEN");
+            return false;
         }
+    }
 
-        log.info("令牌合法放行");
-        chain.doFilter(request, response);
+    private void sendError(HttpServletResponse res, String errorCode) throws IOException {
+        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        res.setContentType("application/json;charset=UTF-8");
+        res.getWriter().write(JSONObject.toJSONString(Result.error(errorCode)));
     }
 }

@@ -8,6 +8,9 @@ import MyLayout from "@/components/MyLayout";
 import AdminEdit from "../views/AdminEdit";
 import Exit from "../views/Exit";
 import Chat from "../components/Chat";
+import CartTable from "@/views/CartTable";
+import PersonalData from "@/views/PersonalData";
+import ModifyPwd from "@/views/ModifyPwd";
 
 const router = createBrowserRouter([
     {
@@ -23,7 +26,7 @@ const router = createBrowserRouter([
                 element: <Home />
             },
             {
-                path: 'category/:parentKey/:childKey',
+                path: 'category',
                 element: <CategoryPage />
             },
             {
@@ -37,6 +40,18 @@ const router = createBrowserRouter([
             {
                 path: 'chat',
                 element:<Chat></Chat>
+            },
+            {
+                path: 'shopping',
+                element:<CartTable></CartTable>
+            },
+            {
+                path: 'personalData',
+                element:<PersonalData></PersonalData>
+            },
+            {
+                path: 'modifyPwd',
+                element:<ModifyPwd></ModifyPwd>
             }
         ]
     },

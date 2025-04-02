@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
+@Slf4j
 @Service
 public class FlowerServiceImpl implements FlowerService {
     @Autowired
@@ -41,6 +41,7 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     // 删除商品
+    @Override
     public boolean deleteFlower(Integer flowerId) {
         if(flowerMapper.getFlowerById(flowerId) == null) {
             return false;
@@ -50,6 +51,7 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     // 修改基本信息
+    @Override
     public boolean updateFlower(Flower flower) {
         if(flowerMapper.getFlowerById(flower.getFlowerId()) == null) {
             return false;
@@ -59,6 +61,7 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     // 修改分类信息
+    @Override
     public boolean updateCategory(Category category) {
         if(categoryMapper.getCategoryByCategoryId(category.getCategoryId()) == null) {
             return false;
@@ -67,16 +70,21 @@ public class FlowerServiceImpl implements FlowerService {
         return true;
     }
 
-    // 以种类ID查询分类
-    public Category getCategoryByCategoryId(Integer categoryId) {
-        return categoryMapper.getCategoryByCategoryId(categoryId);
+    // 以鲜花ID查询分类
+    @Override
+    public Category getCategoryByFlowerId(Integer flowerId) {
+        Category c = categoryMapper.getCategoryByFlowerId(flowerId);
+        log.info(c.toString());
+        return c;
     }
 
+    @Override
     public List<Flower> getAllFlowers() {
         return flowerMapper.getAllFlowers();
     }
 
     // 获取分类值列表
+    @Override
     public List<String> getCategoryValues(String type) {
         return flowerMapper.selectCategoryValues(type);
     }

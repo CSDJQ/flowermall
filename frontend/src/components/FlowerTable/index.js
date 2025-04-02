@@ -57,6 +57,7 @@ const FlowerTable = ({ onSubmit }) => {
     const handleEditCategory = async (flower) => {
         try {
             const category = await getCategory(flower.flowerId);
+            console.log(category);
             setCurrentCategory(category);
             setIsCategoryModalVisible(true);
         } catch (error) {
@@ -118,7 +119,7 @@ const FlowerTable = ({ onSubmit }) => {
             title: '图片',
             dataIndex: 'imageUrl',
             key: 'imageUrl',
-            render: (text) => (text ? <img src={text} alt="鲜花图片" style={{ width: 50, height: 50 }} /> : '默认图片'),
+            render: (text) => (<img src={text|| 'https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/flowers/1743422185863_780.jpg'} alt="鲜花图片" style={{ width: 50, height: 50 }} />),
         },
         { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', render: (text) => new Date(text).toLocaleString() },
         { title: '更新时间', dataIndex: 'updatedAt', key: 'updatedAt', render: (text) => new Date(text).toLocaleString() },

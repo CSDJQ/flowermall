@@ -4,6 +4,7 @@ import com.backend.pojo.Cus;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface CusMapper {
@@ -16,4 +17,16 @@ public interface CusMapper {
 
     @Select("select * from customers where phone = #{phone}")
     Cus getUserByPhone(String phone);
+
+    @Select("select * from customers where cus_id = #{cusId}")
+    Cus getCusById(Integer cusId);
+
+    @Update("update customers SET username=#{newUsername},phone=#{phone} where cus_id=#{userId}")
+    void updateUsername(Integer userId,String newUsername,String phone);
+
+    @Select("SELECT * FROM customers WHERE phone = #{newPhone} AND cus_id != #{cusId}")
+    Cus isNewPhoneExist(String newPhone,Integer cusId);
+
+    @Update("update customers SET username=#{newUsername}, phone=#{newPhone} where cus_id=#{cusId}")
+    void updateInfo(Integer cusId, String newUsername, String newPhone);
 }

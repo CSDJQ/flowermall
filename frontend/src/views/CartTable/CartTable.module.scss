@@ -1,0 +1,50 @@
+.container {
+  margin: 20px auto;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .actionButtons {
+    margin-bottom: 16px;
+  }
+
+  .tableFooter {
+    text-align: right;
+
+    .footerSpace {
+      margin-bottom: 16px;
+    }
+  }
+
+  .totalSection {
+    text-align: right;
+    margin-top: 24px;
+
+    .totalText {
+      font-size: 18px;
+    }
+
+    .totalPrice {
+      font-size: 24px;
+      color: #ff4d4f;
+    }
+
+    .checkoutButton {
+      margin-left: 24px;
+      width: 200px;
+    }
+  }
+
+  .cartTable{
+    width: 100%;
+  }
+}
+
+// 表格图片样式
+.tableImage {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}

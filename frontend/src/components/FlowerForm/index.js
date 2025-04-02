@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Form, InputNumber, Switch, Button, Input, Select } from 'antd';
+import { Modal, Form, InputNumber, Switch, Input, Select } from 'antd';
 import ImageUploader from '@/components/ImageUploader'; // 导入封装的上传组件
 
 const { Option } = Select;
@@ -30,6 +30,11 @@ const FlowerForm = ({ visible, onCancel, onSubmit, currentFlower }) => {
         }
         setDiscount(null);
     }, [visible, currentFlower, form]);
+
+    // 处理图片上传成功
+    const handleUploadSuccess = (imageUrl) => {
+        form.setFieldsValue({ imageUrl }); // 更新表单值
+    };
 
     // 处理折扣选择
     const handleDiscountChange = (value) => {
@@ -73,11 +78,6 @@ const FlowerForm = ({ visible, onCancel, onSubmit, currentFlower }) => {
         }
     };
 
-    // 处理图片上传成功
-    const handleUploadSuccess = (imageUrl) => {
-        form.setFieldsValue({ imageUrl }); // 将图片 URL 设置到表单中
-    };
-
     return (
         <Modal
             title={currentFlower ? '编辑鲜花' : '添加鲜花'}
@@ -116,14 +116,10 @@ const FlowerForm = ({ visible, onCancel, onSubmit, currentFlower }) => {
                     <Switch />
                 </Form.Item>
                 <Form.Item name="imageUrl" label="图片">
-                    <ImageUploader onUploadSuccess={handleUploadSuccess} />
-                    {form.getFieldValue('imageUrl') && (
-                        <img
-                            src={form.getFieldValue('imageUrl')}
-                            alt="鲜花图片"
-                            style={{ width: '100%', marginTop: 16 }}
-                        />
-                    )}
+                    <ImageUploader
+                        onUploadSuccess={handleUploadSuccess}
+                        initialImage={currentFlower?.imageUrl} // 传递初始图片
+                    />
                 </Form.Item>
                 {!currentFlower && (
                     <>

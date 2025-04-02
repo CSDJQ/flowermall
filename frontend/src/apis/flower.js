@@ -1,15 +1,5 @@
 import { request } from '@/utils';
 
-// // 上传图片
-// export const uploadImage = async (formData) => {
-//     return request.post('/upload', formData, {
-//         headers: {
-//             'Content-Type': 'multipart/form-data',
-//         },
-//     });
-// };
-
-
 // 获取所有鲜花
 export const getFlowers = async () => {
     return request.get('/flowers');
@@ -56,11 +46,12 @@ export const updateCategory = async (category) => {
         return false;
     }
 };
+
 export const getCategory = async (flowerId) => {
     try {
         return request.get(`/flowers/category/${flowerId}`);
     } catch (error) {
-        console.error('更新分类失败:', error);
+        console.error('获取分类失败:', error);
         return false;
     }
 }

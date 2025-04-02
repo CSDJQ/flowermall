@@ -29,4 +29,21 @@ public class CusServiceImpl implements CusService {
         // 手机号冲突
         return false;
     }
+
+    @Override
+    public Cus getById(Integer cusId){
+        Cus cus = cusMapper.getCusById(cusId);
+        cus.setPassword(null);// 避免密码泄露
+        return cus;
+    }
+
+    @Override
+    public boolean isNewPhoneExist(String newPhone,Integer cusId) {
+        return cusMapper.isNewPhoneExist(newPhone,cusId)!=null;
+    }
+
+    @Override
+    public void updateInfo(Integer cusId, String newUsername, String newPhone){
+        cusMapper.updateInfo(cusId,newUsername,newPhone);
+    }
 }

@@ -1,15 +1,20 @@
 package com.backend.controller;
 
-import com.backend.pojo.Flower;
+import com.backend.pojo.Cus;
 import com.backend.pojo.FlowerWithCategory;
 import com.backend.pojo.Result;
+import com.backend.service.CusService;
 import com.backend.service.FlowerService;
+import com.backend.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -18,6 +23,9 @@ public class UserController {
 
     @Autowired
     private FlowerService flowerService;
+
+    @Autowired
+    private CusService cusService;
 
     // 获取分类值列表
     @GetMapping("/categories/{type}")
@@ -35,5 +43,44 @@ public class UserController {
         log.info("用户按分类查询商品: type={}, value={}", type, value);
         List<FlowerWithCategory> flowers = flowerService.getFlowersByCategory(type, value);
         return Result.success(flowers);
+    }
+
+    // 获取用户信息
+    @GetMapping("/info")
+    public Result getUserInfo(@RequestHeader("Authorization") String token) {
+        token = token.replace("Bearer ", "");
+        Claims claims = JwtUtils.parseJWT(token);
+        Integer userId = (Integer) claims.get("id");
+        log.info("用户获取信息: userId={}", userId);
+        Cus customer = cusService.getById(userId);
+        return Result.success(customer);
+    }
+
+    // 修改个人信息
+    @PutMapping("/updateInfo")
+    public Result updateInfo(@RequestBody Map<String, String> params,
+                                 @RequestHeader("Authorization") String token) {
+        try {
+            token = token.replace("Bearer ", "");
+            Claims claims = JwtUtils.parseJWT(token);
+            Integer userId = (Integer) claims.get("id");
+            log.info("用户修改个人信息: userId={}", userId);
+
+            String newUsername = params.get("username");
+            String newPhone = params.get("phone");
+
+            // 若手机号不同，验证手机号是否已被使用
+            if (cusService.isNewPhoneExist(newPhone,userId)) {
+                return Result.error("该手机号已被使用");
+            }
+
+            // 更新用户信息
+            cusService.updateInfo(userId, newUsername, newPhone);
+
+            return Result.success("个人信息修改成功");
+        } catch (Exception e) {
+            log.error("修改失败", e);
+            return Result.error("修改失败: " + e.getMessage());
+        }
     }
 }

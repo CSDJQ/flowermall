@@ -9,4 +9,11 @@ public interface CusService {
 
     //  用户注册
     public boolean signup(Cus cus);
+
+    // 用户查询
+    public Cus getById(Integer cusId);
+
+    public boolean isNewPhoneExist(String newPhone,Integer cusId);
+
+    public void updateInfo(Integer cusId, String newUsername, String newPhone);
 }

@@ -1,0 +1,58 @@
+.container {
+  width: 80%;
+  margin: 20px auto;
+
+
+
+  .sectionCard {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .submitButton {
+      margin-top: 16px;
+      width: 120px;
+    }
+  }
+
+  .addressHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .addButton {
+      margin-bottom: 16px;
+    }
+  }
+
+  .addressTable {
+    .actionLink {
+      margin-right: 8px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .modalForm {
+    .formItem {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+
+    .addressHeader {
+      flex-direction: column;
+
+      .addButton {
+        width: 100%;
+        margin-bottom: 12px;
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ public interface FlowerService {
     public boolean deleteFlower(Integer flowerId);
     public boolean updateFlower(Flower flower);
     public boolean updateCategory(Category category);
-    public Category getCategoryByCategoryId(Integer flowerId);
+    public Category getCategoryByFlowerId(Integer flowerId);
     public List<Flower> getAllFlowers();
 
     public List<String> getCategoryValues(String type);

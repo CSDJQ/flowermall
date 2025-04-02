@@ -30,7 +30,6 @@ public class LoginController {
         if (c != null) {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", c.getCusId());
-            claims.put("phone", c.getPhone());
 
             // 判断是否是管理员
             boolean isAdmin = ADMINPHONE.equals(c.getPhone());
