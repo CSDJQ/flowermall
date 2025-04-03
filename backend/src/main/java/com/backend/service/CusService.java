@@ -16,4 +16,8 @@ public interface CusService {
     public boolean isNewPhoneExist(String newPhone,Integer cusId);
 
     public void updateInfo(Integer cusId, String newUsername, String newPhone);
+
+    public boolean verifyPassword(Integer userId, String oldPassword);
+
+    public void updatePassword(Integer userId, String newPassword);
 }

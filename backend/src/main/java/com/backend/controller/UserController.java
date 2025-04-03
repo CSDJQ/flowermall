@@ -83,4 +83,32 @@ public class UserController {
             return Result.error("修改失败: " + e.getMessage());
         }
     }
+
+    // 修改密码
+    @PostMapping("/updatePwd")
+    public Result updatePassword(@RequestBody Map<String, String> params,
+                                 @RequestHeader("Authorization") String token) {
+        try {
+            token = token.replace("Bearer ", "");
+            Claims claims = JwtUtils.parseJWT(token);
+            Integer userId = (Integer) claims.get("id");
+            log.info("用户修改密码: userId={}", userId);
+
+            String oldPassword = params.get("oldPassword");
+            String newPassword = params.get("newPassword");
+
+            // 验证旧密码是否正确
+            if (!cusService.verifyPassword(userId, oldPassword)) {
+                return Result.error("旧密码不正确");
+            }
+
+            // 更新密码
+            cusService.updatePassword(userId, newPassword);
+
+            return Result.success("密码修改成功");
+        } catch (Exception e) {
+            log.error("密码修改失败", e);
+            return Result.error("密码修改失败: " + e.getMessage());
+        }
+    }
 }

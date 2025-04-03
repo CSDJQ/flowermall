@@ -15,7 +15,7 @@ export const updateUserInfo = async (userInfo) => {
 
 // 修改密码
 export const changePassword = async (oldPassword, newPassword) => {
-    return request.post('/user/change-password', { oldPassword, newPassword });
+    return request.post('/user/updatePwd', { oldPassword, newPassword });
 };
 
 // 获取收货地址列表

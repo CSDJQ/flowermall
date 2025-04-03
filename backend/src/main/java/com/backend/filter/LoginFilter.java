@@ -18,11 +18,9 @@ import java.util.Set;
 @Slf4j
 @WebFilter(urlPatterns = "/*")
 public class LoginFilter implements Filter {
-
     private static final Set<String> ALLOWED_PATHS = Set.of(
             "/login",
-            "/signup",
-            "/api/token/validate" // 放行token验证接口
+            "/signup"
     );
 
     @Override
@@ -30,22 +28,21 @@ public class LoginFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        String method = req.getMethod();
-        String url = req.getRequestURI();
 
-        // 1. 放行OPTIONS预检请求
-        if ("OPTIONS".equalsIgnoreCase(method)) {
+        // 放行OPTIONS预检请求
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
             chain.doFilter(request, response);
             return;
         }
 
-        // 2. 放行白名单路径
-        if (ALLOWED_PATHS.stream().anyMatch(url::startsWith)) {
+        // 放行白名单路径
+        String path = req.getRequestURI();
+        if (ALLOWED_PATHS.stream().anyMatch(path::startsWith)) {
             chain.doFilter(request, response);
             return;
         }
 
-        // 3. JWT验证
+        // JWT验证
         String jwt = extractJwt(req);
         if (!validateJwt(jwt, res)) {
             return;
@@ -77,6 +74,11 @@ public class LoginFilter implements Filter {
     }
 
     private void sendError(HttpServletResponse res, String errorCode) throws IOException {
+        // 保留CORS头
+        res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+
+        // 设置错误响应
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         res.setContentType("application/json;charset=UTF-8");
         res.getWriter().write(JSONObject.toJSONString(Result.error(errorCode)));

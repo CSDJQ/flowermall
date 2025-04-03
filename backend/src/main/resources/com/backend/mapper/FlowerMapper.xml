@@ -49,7 +49,7 @@
         c.category_id
         FROM flower f
         JOIN category c ON f.flower_id = c.flower_id
-        WHERE
+        WHERE f.is_on_sale = 1 AND
         <choose>
             <when test="type == 'mainFlower'">
                 c.main_flower = #{value}
