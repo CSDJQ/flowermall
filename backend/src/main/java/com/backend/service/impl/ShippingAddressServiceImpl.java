@@ -32,6 +32,7 @@ public class ShippingAddressServiceImpl implements ShippingAddressService {
     @Transactional
     public boolean updateAddress(ShippingAddress address) {
         if (address.getIsDefault() != null && address.getIsDefault()) {
+            // 如果要设置默认地址，先清除
             addressMapper.clearDefaultStatus(address.getCusId());
         }
         return addressMapper.update(address) > 0;

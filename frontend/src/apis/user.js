@@ -40,5 +40,9 @@ export const deleteShippingAddress = async (addressId) => {
 
 // 设置默认收货地址
 export const setDefaultAddress = async (addressId) => {
-    return request.put(`/addresses/default/${addressId}`);
+    let address = {
+        addressId: addressId,
+        isDefault: true,
+    }
+    return request.put(`/addresses`, address);
 };

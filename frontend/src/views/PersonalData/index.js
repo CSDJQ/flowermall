@@ -235,7 +235,6 @@ const PersonalData = () => {
         setIsModalVisible(true);
     };
 
-    // 地址表格列定义
     const addressColumns = [
         {
             title: '收货人',
@@ -283,13 +282,17 @@ const PersonalData = () => {
                         </Button>
                     </Popconfirm>
                     {!record.isDefault && (
-                        <Button
-                            type="link"
-                            onClick={() => handleSetDefaultAddress(record.addressId)}
+                        <Popconfirm
+                            title="确定设为默认地址吗？"
+                            onConfirm={() => handleSetDefaultAddress(record.addressId)}
                             disabled={loading.addressAction}
+                            okText="确定"
+                            cancelText="取消"
                         >
-                            设为默认
-                        </Button>
+                            <Button type="link" disabled={loading.addressAction}>
+                                设为默认
+                            </Button>
+                        </Popconfirm>
                     )}
                 </Space>
             ),
@@ -423,7 +426,7 @@ const PersonalData = () => {
                         label="区/县"
                         rules={validationRules.district}
                     >
-                        <Input placeholder="例如：朝阳区" />
+                        <Input placeholder="例如：番禺区" />
                     </Form.Item>
                     <Form.Item
                         name="detailedAddress"
@@ -432,7 +435,7 @@ const PersonalData = () => {
                     >
                         <Input.TextArea
                             rows={3}
-                            placeholder="例如：建国路88号SOHO现代城A座2001室"
+                            placeholder="例如：华南理工大学大学城校区"
                         />
                     </Form.Item>
                     <Form.Item
