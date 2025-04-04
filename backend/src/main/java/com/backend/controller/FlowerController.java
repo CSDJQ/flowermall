@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/flowers")
+// 对于商品的管理操作
 public class FlowerController {
     @Autowired
     private FlowerService flowerService;

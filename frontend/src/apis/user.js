@@ -46,3 +46,8 @@ export const setDefaultAddress = async (addressId) => {
     }
     return request.put(`/addresses`, address);
 };
+
+// 获取默认地址
+export const getDefaultAddress = async () => {
+    return request.get('/addresses/default');
+}

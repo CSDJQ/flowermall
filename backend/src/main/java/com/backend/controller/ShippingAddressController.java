@@ -17,7 +17,6 @@ public class ShippingAddressController {
     @Autowired
     private ShippingAddressService addressService;
 
-
     // 从 JWT Token 中解析出客户 ID
     private Integer getCustomerIdFromToken(String token) throws Exception {
         token = token.replace("Bearer ", "");
@@ -80,17 +79,18 @@ public class ShippingAddressController {
     }
 
 
-//    @GetMapping("/default")
-//    public Result getDefaultAddress(@RequestParam Integer cusId) {
-//        try {
-//            ShippingAddress address = addressService.getDefaultAddress(cusId);
-//            return address != null ? Result.success(address) : Result.error("未设置默认地址");
-//        } catch (Exception e) {
-//            log.error("获取默认地址失败", e);
-//            return Result.error("获取默认地址失败: " + e.getMessage());
-//        }
-//    }
-//
+    @GetMapping("/default")
+    public Result getDefaultAddress(@RequestHeader("Authorization") String token) {
+        try {
+            Integer cusId = getCustomerIdFromToken(token);
+            ShippingAddress address = addressService.getDefaultAddress(cusId);
+            return address != null ? Result.success(address) : Result.error("未设置默认地址");
+        } catch (Exception e) {
+            log.error("获取默认地址失败", e);
+            return Result.error("获取默认地址失败: " + e.getMessage());
+        }
+    }
+
 //    @GetMapping("/{addressId}")
 //    public Result getAddressDetail(@PathVariable Integer addressId, @RequestParam Integer cusId) {
 //        try {

@@ -8,6 +8,7 @@ const Exit = () => {
     useEffect(() => {
         dispatch(setToken(""));  // 清空 token
         localStorage.removeItem("token");  // 清除 token
+        sessionStorage.clear();// 清空购物车
         window.location.reload();
     }, [dispatch]);  // 空依赖数组确保只在组件挂载时运行一次
 

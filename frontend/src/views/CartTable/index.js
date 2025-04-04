@@ -1,19 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, InputNumber, Space, Divider, Typography, message, Modal } from 'antd';
-import { ShoppingCartOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { createOrder } from '@/apis/order'; // 假设有创建订单的API
+import {
+    Table, Button, InputNumber, Space, Divider, Typography,
+    message, Modal, Card, Form, Input, Checkbox, Tabs
+} from 'antd';
+import {
+    ShoppingCartOutlined, DeleteOutlined, ExclamationCircleOutlined,
+    EditOutlined, PlusOutlined
+} from '@ant-design/icons';
+import { createOrder } from '@/apis/order';
+import {
+    getShippingAddresses,
+    addShippingAddress,
+    setDefaultAddress,
+    getDefaultAddress
+} from '@/apis/user';
 import style from './CartTable.module.scss';
 
-const { Text } = Typography;
-const { confirm } = Modal;
+const { Text, Title } = Typography;
 
 const CartTable = () => {
+    // 状态管理
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [addresses, setAddresses] = useState([]);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [addressModalVisible, setAddressModalVisible] = useState(false);
+    const [addressForm] = Form.useForm();
+    const [isEditingAddress, setIsEditingAddress] = useState(false);
+    const [loadingAddresses, setLoadingAddresses] = useState(false);
 
-    // 获取购物车数据（从sessionStorage）
+    // 获取购物车数据
     const getCart = () => {
         try {
             return JSON.parse(sessionStorage.getItem('cart')) || [];
@@ -43,37 +61,91 @@ const CartTable = () => {
         }
     };
 
-    // 更新商品数量
-    const handleQuantityChange = (flowerId, quantity) => {
-        const cart = getCart();
-        const index = cart.findIndex(item => item.flowerId === flowerId);
-
-        if (index !== -1) {
-            if (quantity > 0) {
-                cart[index].quantity = quantity;
-            } else {
-                cart.splice(index, 1);
+    // 获取默认地址
+    const fetchDefaultAddress = async () => {
+        try {
+            const res = await getDefaultAddress();
+            if (res.code === 200 && res.data) {
+                setSelectedAddress(res.data);
+                return res.data;
             }
-            updateCart(cart);
-            message.success('购物车已更新');
+            return null;
+        } catch (error) {
+            console.error('获取默认地址失败', error);
+            return null;
         }
     };
 
-    // 删除选中商品
-    const handleDeleteSelected = () => {
-        const cart = getCart();
-        const updatedCart = cart.filter(item => !selectedRowKeys.includes(item.flowerId));
-        updateCart(updatedCart);
-        setSelectedRowKeys([]);
-        message.success('已删除选中商品');
+    // 获取用户地址列表（只在点击选择地址时调用）
+    const fetchAllAddresses = async () => {
+        setLoadingAddresses(true);
+        try {
+            const res = await getShippingAddresses();
+            if (res.code === 200) {
+                setAddresses(res.data);
+            }
+        } catch (error) {
+            console.error('获取地址失败', error);
+            message.error('获取地址失败');
+        } finally {
+            setLoadingAddresses(false);
+        }
     };
 
-    // 清空购物车
-    const handleClearCart = () => {
-        sessionStorage.removeItem('cart');
-        setCartItems([]);
-        setSelectedRowKeys([]);
-        message.success('购物车已清空');
+    // 添加新地址
+// 添加新地址
+    const handleAddAddress = async () => {
+        try {
+            const values = await addressForm.validateFields();
+            const res = await addShippingAddress(values);
+
+            if (res.code === 200) {
+                message.success('地址添加成功');
+                setAddressModalVisible(false);
+                addressForm.resetFields();
+
+                // 刷新地址列表
+                await fetchAllAddresses();
+
+                // 无论是否是默认地址，都选中刚添加的地址
+                setSelectedAddress(values);
+
+                // 如果是默认地址，额外刷新默认地址
+                if (values.isDefault) {
+                    await fetchDefaultAddress();
+                }
+            }
+        } catch (error) {
+            if (!error.errorFields) {
+                message.error('添加地址失败');
+            }
+        }
+    };
+
+    // 设置默认地址
+    const handleSetDefault = async (addressId) => {
+        try {
+            const res = await setDefaultAddress(addressId);
+            if (res.code === 200) {
+                message.success('默认地址设置成功');
+                await fetchDefaultAddress();
+                await fetchAllAddresses();
+            }
+        } catch (error) {
+            message.error('设置默认地址失败');
+        }
+    };
+
+    // 打开地址选择模态框
+    const handleOpenAddressModal = () => {
+        setAddressModalVisible(true);
+        setIsEditingAddress(false);
+        fetchAllAddresses(); // 只在打开时获取全部地址
+    };
+
+    // 获取选中商品
+    const getSelectedItems = () => {
+        return cartItems.filter(item => selectedRowKeys.includes(item.flowerId));
     };
 
     // 计算选中商品的总价
@@ -94,11 +166,6 @@ const CartTable = () => {
         }, 0);
     };
 
-    // 获取选中商品
-    const getSelectedItems = () => {
-        return cartItems.filter(item => selectedRowKeys.includes(item.flowerId));
-    };
-
     // 处理结算
     const handleCheckout = () => {
         const selectedItems = getSelectedItems();
@@ -107,24 +174,47 @@ const CartTable = () => {
             return;
         }
 
-        confirm({
-            title: '确认支付',
+        if (!selectedAddress) {
+            message.warning('请选择收货地址');
+            return;
+        }
+
+        Modal.confirm({
+            title: '确认订单',
             icon: <ExclamationCircleOutlined />,
+            width: 800,
             content: (
                 <div>
-                    <p>确认支付以下商品吗？</p>
-                    <ul style={{ marginTop: 8 }}>
-                        {selectedItems.map(item => (
-                            <li key={item.flowerId}>
-                                {item.name} × {item.quantity}
-                                <Text type="secondary" style={{ marginLeft: 8 }}>
-                                    ¥{(item.discountPrice || item.originalPrice) * item.quantity}
-                                </Text>
-                            </li>
-                        ))}
-                    </ul>
-                    <Divider style={{ margin: '12px 0' }} />
-                    <Text strong>总计: ¥{calculateSelectedTotal().toFixed(2)}</Text>
+                    <Card title="收货地址" style={{ marginBottom: 16 }}>
+                        <div className={style.selectedAddress}>
+                            <Text strong>{selectedAddress.receiverName}</Text>
+                            <Text className={style.phone}>{selectedAddress.receiverPhone}</Text>
+                            <div className={style.fullAddress}>
+                                {selectedAddress.district} {selectedAddress.detailedAddress}
+                                {selectedAddress.isDefault && (
+                                    <Text type="success" className={style.defaultTag}>[默认]</Text>
+                                )}
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card title="订单信息">
+                        <ul className={style.orderItems}>
+                            {selectedItems.map(item => (
+                                <li key={item.flowerId} className={style.orderItem}>
+                                    <Text>{item.name} × {item.quantity}</Text>
+                                    <Text type="secondary" className={style.itemPrice}>
+                                        ¥{(item.discountPrice || item.originalPrice) * item.quantity}
+                                    </Text>
+                                </li>
+                            ))}
+                        </ul>
+                        <Divider className={style.orderDivider} />
+                        <div className={style.orderTotal}>
+                            <Text strong>总计: </Text>
+                            <Text strong type="danger">¥{calculateSelectedTotal().toFixed(2)}</Text>
+                        </div>
+                    </Card>
                 </div>
             ),
             okText: '确认支付',
@@ -132,13 +222,13 @@ const CartTable = () => {
             onOk: async () => {
                 try {
                     setConfirmLoading(true);
-                    // 调用创建订单API
                     const orderData = {
                         items: selectedItems.map(item => ({
                             flowerId: item.flowerId,
                             quantity: item.quantity,
                             price: item.discountPrice || item.originalPrice
                         })),
+                        addressId: selectedAddress.addressId,
                         totalAmount: calculateSelectedTotal()
                     };
 
@@ -146,7 +236,6 @@ const CartTable = () => {
 
                     if (response.success) {
                         message.success('支付成功，订单已创建');
-
                         // 从购物车中移除已支付的商品
                         const cart = getCart();
                         const updatedCart = cart.filter(item => !selectedRowKeys.includes(item.flowerId));
@@ -164,6 +253,212 @@ const CartTable = () => {
             }
         });
     };
+
+    // 更新商品数量
+    const handleQuantityChange = (flowerId, quantity) => {
+        const cart = getCart();
+        const index = cart.findIndex(item => item.flowerId === flowerId);
+
+        if (index !== -1) {
+            if (quantity > 0) {
+                cart[index].quantity = quantity;
+            } else {
+                cart.splice(index, 1);
+            }
+            updateCart(cart);
+        }
+    };
+
+    // 删除选中商品
+    const handleDeleteSelected = () => {
+        const cart = getCart();
+        const updatedCart = cart.filter(item => !selectedRowKeys.includes(item.flowerId));
+        updateCart(updatedCart);
+        setSelectedRowKeys([]);
+        message.success('已删除选中商品');
+    };
+
+    // 清空购物车
+    const handleClearCart = () => {
+        sessionStorage.removeItem('cart');
+        setCartItems([]);
+        setSelectedRowKeys([]);
+        message.success('购物车已清空');
+    };
+
+    // 渲染地址选择区域
+    const renderAddressSection = () => (
+        <Card
+            title="收货地址"
+            className={style.addressCard}
+            extra={
+                <Button
+                    type="link"
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                        setAddressModalVisible(true);
+                        setIsEditingAddress(true); // 直接进入新增地址模式
+                        addressForm.resetFields();
+                    }}
+                >
+                    新增地址
+                </Button>
+            }
+        >
+            {selectedAddress ? (
+                <div className={style.selectedAddress}>
+                    <Text strong>{selectedAddress.receiverName}</Text>
+                    <Text className={style.phone}>{selectedAddress.receiverPhone}</Text>
+                    <div className={style.fullAddress}>
+                        {selectedAddress.district} {selectedAddress.detailedAddress}
+                        {selectedAddress.isDefault && (
+                            <Text type="success" className={style.defaultTag}>[默认]</Text>
+                        )}
+                    </div>
+                    <Button
+                        type="link"
+                        onClick={handleOpenAddressModal}
+                    >
+                        更改地址
+                    </Button>
+                </div>
+            ) : (
+                <div className={style.noAddress}>
+                    <Text type="warning">请选择收货地址</Text>
+                    <Button
+                        type="primary"
+                        onClick={handleOpenAddressModal}
+                    >
+                        选择地址
+                    </Button>
+                </div>
+            )}
+        </Card>
+    );
+
+    // 地址管理模态框内容
+    const renderAddressManager = () => (
+        <div className={style.addressManager}>
+            <Tabs
+                activeKey={isEditingAddress ? "add" : "select"}
+                onChange={(key) => setIsEditingAddress(key === 'add')}
+            >
+                <Tabs.TabPane tab="选择地址" key="select">
+                    {loadingAddresses ? (
+                        <div style={{ textAlign: 'center', padding: '24px' }}>
+                            <Text type="secondary">加载地址中...</Text>
+                        </div>
+                    ) : addresses.length === 0 ? (
+                        <div className={style.emptyAddress}>
+                            <Text type="secondary">暂无地址，请添加新地址</Text>
+                            <Button
+                                type="primary"
+                                onClick={() => setIsEditingAddress(true)}
+                                style={{ marginTop: 16 }}
+                            >
+                                <PlusOutlined /> 添加地址
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className={style.addressList}>
+                            {addresses.map(address => (
+                                <div
+                                    key={address.addressId}
+                                    className={`${style.addressItem} ${selectedAddress?.addressId === address.addressId ? style.selected : ''}`}
+                                    onClick={() => {
+                                        setSelectedAddress(address);
+                                        setAddressModalVisible(false);
+                                    }}
+                                >
+                                    <div className={style.addressInfo}>
+                                        <Text strong>{address.receiverName}</Text>
+                                        <Text className={style.phone}>{address.receiverPhone}</Text>
+                                        <div className={style.fullAddress}>
+                                            {address.district} {address.detailedAddress}
+                                            {address.isDefault && (
+                                                <Text type="success" className={style.defaultTag}>[默认]</Text>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <Space>
+                                        {!address.isDefault && (
+                                            <Button
+                                                type="text"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleSetDefault(address.addressId);
+                                                }}
+                                            >
+                                                设为默认
+                                            </Button>
+                                        )}
+                                    </Space>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="新增地址" key="add">
+                    <Form form={addressForm} layout="vertical" className={style.addressForm}>
+                        <Form.Item
+                            name="receiverName"
+                            label="收货人姓名"
+                            rules={[{ required: true, message: '请输入收货人姓名' }]}
+                        >
+                            <Input placeholder="请输入收货人姓名" />
+                        </Form.Item>
+                        <Form.Item
+                            name="receiverPhone"
+                            label="收货人电话"
+                            rules={[
+                                { required: true, message: '请输入收货人电话' },
+                                { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }
+                            ]}
+                        >
+                            <Input placeholder="请输入收货人电话" />
+                        </Form.Item>
+                        <Form.Item
+                            name="district"
+                            label="区/县"
+                            rules={[{ required: true, message: '请输入区/县信息' }]}
+                        >
+                            <Input placeholder="例如：番禺区" />
+                        </Form.Item>
+                        <Form.Item
+                            name="detailedAddress"
+                            label="详细地址"
+                            rules={[{ required: true, message: '请输入详细地址' }]}
+                        >
+                            <Input.TextArea placeholder="例如：华南理工大学大学城校区" rows={3} />
+                        </Form.Item>
+                        <Form.Item
+                            name="isDefault"
+                            label="是否默认地址"
+                            valuePropName="checked"
+                        >
+                            <Checkbox>设为默认地址</Checkbox>
+                        </Form.Item>
+                        <Form.Item>
+                            <Space>
+                                <Button
+                                    type="primary"
+                                    onClick={handleAddAddress}
+                                >
+                                    添加地址
+                                </Button>
+                                <Button onClick={() => {
+                                    setAddressModalVisible(false);
+                                    addressForm.resetFields();
+                                }}>
+                                    取消
+                                </Button>
+                            </Space>
+                        </Form.Item>
+                    </Form>
+                </Tabs.TabPane>
+            </Tabs>
+        </div>
+    );
 
     // 表格列定义
     const columns = [
@@ -184,10 +479,9 @@ const CartTable = () => {
             title: '商品名称',
             dataIndex: 'name',
             key: 'name',
-            render: (text, record) => (
+            render: (text) => (
                 <div>
                     <div>{text}</div>
-                    <Text type="secondary">{record.description?.substring(0, 30)}...</Text>
                 </div>
             ),
         },
@@ -219,6 +513,7 @@ const CartTable = () => {
                     max={99}
                     value={text}
                     onChange={(value) => handleQuantityChange(record.flowerId, value)}
+                    className={style.quantityInput}
                 />
             ),
         },
@@ -235,10 +530,11 @@ const CartTable = () => {
             key: 'action',
             render: (_, record) => (
                 <Button
-                    type="link"
+                    type="text"
                     danger
                     icon={<DeleteOutlined />}
                     onClick={() => handleQuantityChange(record.flowerId, 0)}
+                    className={style.deleteBtn}
                 >
                     删除
                 </Button>
@@ -256,8 +552,10 @@ const CartTable = () => {
         </div>
     );
 
+    // 初始化时只获取默认地址
     useEffect(() => {
         fetchCart();
+        fetchDefaultAddress();
     }, []);
 
     return (
@@ -269,6 +567,7 @@ const CartTable = () => {
                         icon={<DeleteOutlined />}
                         disabled={selectedRowKeys.length === 0}
                         onClick={handleDeleteSelected}
+                        className={style.actionBtn}
                     >
                         删除选中
                     </Button>
@@ -277,28 +576,33 @@ const CartTable = () => {
                         icon={<DeleteOutlined />}
                         onClick={handleClearCart}
                         disabled={cartItems.length === 0}
+                        className={style.actionBtn}
                     >
                         清空购物车
                     </Button>
                 </Space>
             </div>
 
-            <Table
-                rowKey="flowerId"
-                columns={columns}
-                dataSource={cartItems}
-                loading={loading}
-                pagination={false}
-                footer={footer}
-                rowSelection={{
-                    selectedRowKeys,
-                    onChange: setSelectedRowKeys,
-                }}
-                scroll={{ x: true }}
-                className={style.cartTable}
-            />
+            <div className={style.tableWrapper}>
+                {selectedRowKeys.length > 0 && renderAddressSection()}
 
-            <Divider />
+                <Table
+                    rowKey="flowerId"
+                    columns={columns}
+                    dataSource={cartItems}
+                    loading={loading}
+                    pagination={false}
+                    footer={footer}
+                    rowSelection={{
+                        selectedRowKeys,
+                        onChange: setSelectedRowKeys,
+                    }}
+                    scroll={{ x: true }}
+                    className={style.cartTable}
+                />
+            </div>
+
+            <Divider className={style.totalDivider} />
 
             <div className={style.totalSection}>
                 <Text strong className={style.totalText}>
@@ -310,12 +614,28 @@ const CartTable = () => {
                     className={style.checkoutButton}
                     icon={<ShoppingCartOutlined />}
                     onClick={handleCheckout}
-                    disabled={selectedRowKeys.length === 0}
+                    disabled={selectedRowKeys.length === 0 || !selectedAddress}
                     loading={confirmLoading}
                 >
                     去结算({selectedRowKeys.length})
                 </Button>
             </div>
+
+            {/* 地址管理模态框 */}
+            <Modal
+                title="管理收货地址"
+                visible={addressModalVisible}
+                onCancel={() => {
+                    setAddressModalVisible(false);
+                    addressForm.resetFields();
+                    setIsEditingAddress(false);
+                }}
+                footer={null}
+                width={800}
+                destroyOnClose
+            >
+                {renderAddressManager()}
+            </Modal>
         </div>
     );
 };

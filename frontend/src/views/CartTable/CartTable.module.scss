@@ -1,3 +1,4 @@
+// CartTable.module.scss
 .container {
   margin: 20px auto;
   width: 80%;
@@ -5,46 +6,156 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
 
-  .actionButtons {
-    margin-bottom: 16px;
-  }
+.tableWrapper {
+  width: 100%;
+  margin-bottom: 24px;
+}
 
-  .tableFooter {
-    text-align: right;
+.addressCard {
+  width: 100%;
+  margin-bottom: 16px;
 
-    .footerSpace {
-      margin-bottom: 16px;
+  .selectedAddress {
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+
+    .phone {
+      margin-left: 12px;
+    }
+
+    .fullAddress {
+      margin-top: 8px;
+      color: #666;
+
+      .defaultTag {
+        margin-left: 8px;
+      }
     }
   }
 
-  .totalSection {
-    text-align: right;
-    margin-top: 24px;
+  .noAddress {
+    text-align: center;
+    padding: 16px;
 
-    .totalText {
-      font-size: 18px;
+    .ant-typography {
+      color: #faad14;
+      margin-bottom: 12px;
+      display: block;
     }
-
-    .totalPrice {
-      font-size: 24px;
-      color: #ff4d4f;
-    }
-
-    .checkoutButton {
-      margin-left: 24px;
-      width: 200px;
-    }
-  }
-
-  .cartTable{
-    width: 100%;
   }
 }
 
-// 表格图片样式
-.tableImage {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
+.cartTable {
+  width: 100%;
+
+  .tableImage {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .quantityInput {
+    width: 80px;
+  }
+
+  .deleteBtn {
+    padding-left: 0;
+  }
+}
+
+.footerContainer {
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 0 0 8px 8px;
+}
+
+.totalSection {
+  text-align: right;
+  margin-top: 24px;
+
+  .totalText {
+    font-size: 18px;
+  }
+
+  .totalPrice {
+    font-size: 24px;
+    color: #ff4d4f;
+  }
+
+  .checkoutButton {
+    margin-left: 24px;
+    width: 200px;
+  }
+}
+
+.checkoutButton {
+  width: 200px;
+}
+
+.actionButtons {
+  margin-bottom: 16px;
+}
+
+.totalDivider {
+  margin: 24px 0;
+}
+
+// 地址管理模态框样式
+.addressManager {
+  .addressList {
+    max-height: 400px;
+    overflow-y: auto;
+
+    .addressItem {
+      padding: 12px;
+      margin-bottom: 8px;
+      border: 1px solid #f0f0f0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+
+      &:hover {
+        border-color: #d9d9d9;
+      }
+
+      &.selected {
+        border-color: #1890ff;
+        background-color: #e6f7ff;
+      }
+
+      .addressInfo {
+        margin-bottom: 8px;
+
+        .phone {
+          margin-left: 12px;
+        }
+
+        .fullAddress {
+          color: #666;
+          margin-top: 4px;
+
+          .defaultTag {
+            margin-left: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  .addressForm {
+    margin-top: 16px;
+  }
+
+  .emptyAddress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #999;
+  }
 }
