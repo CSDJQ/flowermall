@@ -78,7 +78,6 @@ public class ShippingAddressController {
         }
     }
 
-
     @GetMapping("/default")
     public Result getDefaultAddress(@RequestHeader("Authorization") String token) {
         try {
@@ -90,15 +89,4 @@ public class ShippingAddressController {
             return Result.error("获取默认地址失败: " + e.getMessage());
         }
     }
-
-//    @GetMapping("/{addressId}")
-//    public Result getAddressDetail(@PathVariable Integer addressId, @RequestParam Integer cusId) {
-//        try {
-//            ShippingAddress address = addressService.getAddressById(addressId, cusId);
-//            return address != null ? Result.success(address) : Result.error("地址不存在");
-//        } catch (Exception e) {
-//            log.error("获取地址详情失败", e);
-//            return Result.error("获取地址详情失败: " + e.getMessage());
-//        }
-//    }
 }
