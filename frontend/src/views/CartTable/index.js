@@ -1,7 +1,8 @@
+// src/views/CartTable/index.js
 import React, { useState, useEffect } from 'react';
 import {
     Table, Button, InputNumber, Space, Divider, Typography,
-    message, Modal, Card, Form, Input, Checkbox, Tabs
+    message, Modal, Card, Form, Input, Checkbox, Tabs, Radio
 } from 'antd';
 import {
     ShoppingCartOutlined, DeleteOutlined, ExclamationCircleOutlined,
@@ -15,6 +16,8 @@ import {
     getDefaultAddress
 } from '@/apis/user';
 import style from './CartTable.module.scss';
+import moment from 'moment';
+import DeliveryTimeSection from '@/components/DeliveryTimeSection';
 
 const { Text, Title } = Typography;
 
@@ -30,6 +33,13 @@ const CartTable = () => {
     const [addressForm] = Form.useForm();
     const [isEditingAddress, setIsEditingAddress] = useState(false);
     const [loadingAddresses, setLoadingAddresses] = useState(false);
+    const [deliveryTime, setDeliveryTime] = useState(null);
+
+    // 初始化数据
+    useEffect(() => {
+        fetchCart();
+        fetchDefaultAddress();
+    }, []);
 
     // 获取购物车数据
     const getCart = () => {
@@ -76,7 +86,7 @@ const CartTable = () => {
         }
     };
 
-    // 获取用户地址列表（只在点击选择地址时调用）
+    // 获取用户地址列表
     const fetchAllAddresses = async () => {
         setLoadingAddresses(true);
         try {
@@ -93,7 +103,6 @@ const CartTable = () => {
     };
 
     // 添加新地址
-// 添加新地址
     const handleAddAddress = async () => {
         try {
             const values = await addressForm.validateFields();
@@ -103,14 +112,8 @@ const CartTable = () => {
                 message.success('地址添加成功');
                 setAddressModalVisible(false);
                 addressForm.resetFields();
-
-                // 刷新地址列表
                 await fetchAllAddresses();
-
-                // 无论是否是默认地址，都选中刚添加的地址
                 setSelectedAddress(values);
-
-                // 如果是默认地址，额外刷新默认地址
                 if (values.isDefault) {
                     await fetchDefaultAddress();
                 }
@@ -140,7 +143,7 @@ const CartTable = () => {
     const handleOpenAddressModal = () => {
         setAddressModalVisible(true);
         setIsEditingAddress(false);
-        fetchAllAddresses(); // 只在打开时获取全部地址
+        fetchAllAddresses();
     };
 
     // 获取选中商品
@@ -179,6 +182,11 @@ const CartTable = () => {
             return;
         }
 
+        if (!deliveryTime) {
+            message.warning('请选择送达时间');
+            return;
+        }
+
         Modal.confirm({
             title: '确认订单',
             icon: <ExclamationCircleOutlined />,
@@ -196,6 +204,10 @@ const CartTable = () => {
                                 )}
                             </div>
                         </div>
+                    </Card>
+
+                    <Card title="送达时间" style={{ marginBottom: 16 }}>
+                        <Text strong>{deliveryTime.format('YYYY-MM-DD HH:mm')}</Text>
                     </Card>
 
                     <Card title="订单信息">
@@ -229,6 +241,7 @@ const CartTable = () => {
                             price: item.discountPrice || item.originalPrice
                         })),
                         addressId: selectedAddress.addressId,
+                        deliveryTime: deliveryTime.format('YYYY-MM-DD HH:mm:ss'),
                         totalAmount: calculateSelectedTotal()
                     };
 
@@ -236,11 +249,11 @@ const CartTable = () => {
 
                     if (response.success) {
                         message.success('支付成功，订单已创建');
-                        // 从购物车中移除已支付的商品
                         const cart = getCart();
                         const updatedCart = cart.filter(item => !selectedRowKeys.includes(item.flowerId));
                         updateCart(updatedCart);
                         setSelectedRowKeys([]);
+                        setDeliveryTime(null);
                     } else {
                         message.error(response.message || '支付失败');
                     }
@@ -297,7 +310,7 @@ const CartTable = () => {
                     icon={<PlusOutlined />}
                     onClick={() => {
                         setAddressModalVisible(true);
-                        setIsEditingAddress(true); // 直接进入新增地址模式
+                        setIsEditingAddress(true);
                         addressForm.resetFields();
                     }}
                 >
@@ -479,11 +492,7 @@ const CartTable = () => {
             title: '商品名称',
             dataIndex: 'name',
             key: 'name',
-            render: (text) => (
-                <div>
-                    <div>{text}</div>
-                </div>
-            ),
+            render: (text) => <div>{text}</div>,
         },
         {
             title: '原价',
@@ -552,12 +561,6 @@ const CartTable = () => {
         </div>
     );
 
-    // 初始化时只获取默认地址
-    useEffect(() => {
-        fetchCart();
-        fetchDefaultAddress();
-    }, []);
-
     return (
         <div className={style.container}>
             <div className={style.actionButtons}>
@@ -584,7 +587,15 @@ const CartTable = () => {
             </div>
 
             <div className={style.tableWrapper}>
-                {selectedRowKeys.length > 0 && renderAddressSection()}
+                {selectedRowKeys.length > 0 && (
+                    <>
+                        {renderAddressSection()}
+                        <DeliveryTimeSection
+                            deliveryTime={deliveryTime}
+                            setDeliveryTime={setDeliveryTime}
+                        />
+                    </>
+                )}
 
                 <Table
                     rowKey="flowerId"
@@ -614,7 +625,7 @@ const CartTable = () => {
                     className={style.checkoutButton}
                     icon={<ShoppingCartOutlined />}
                     onClick={handleCheckout}
-                    disabled={selectedRowKeys.length === 0 || !selectedAddress}
+                    disabled={selectedRowKeys.length === 0 || !selectedAddress || !deliveryTime}
                     loading={confirmLoading}
                 >
                     去结算({selectedRowKeys.length})
