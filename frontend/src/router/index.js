@@ -11,6 +11,8 @@ import Chat from "../components/Chat";
 import CartTable from "@/views/CartTable";
 import PersonalData from "@/views/PersonalData";
 import ModifyPwd from "@/views/ModifyPwd";
+import OrderList from "@/views/OrderList";
+import OrderDetail from "@/views/OrderDetail";
 
 const router = createBrowserRouter([
     {
@@ -52,6 +54,14 @@ const router = createBrowserRouter([
             {
                 path: 'modifyPwd',
                 element:<ModifyPwd></ModifyPwd>
+            },
+            {
+                path: 'orderList',
+                element: <OrderList />,
+            },
+            {
+                path: 'orderDetails/:orderNumber',
+                element: <OrderDetail />,
             }
         ]
     },

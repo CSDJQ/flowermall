@@ -1,0 +1,28 @@
+.deliveryTimeCard {
+  width: 100%;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .ant-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ant-radio-button-wrapper {
+    margin-bottom: 8px;
+  }
+
+  .deliveryTimeLabel {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .deliveryTimeNote {
+    display: block;
+    margin-top: 8px;
+    color: #8c8c8c;
+  }
+}

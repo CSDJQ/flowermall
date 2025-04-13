@@ -28,4 +28,7 @@ public interface ShippingAddressMapper {
 
     @Select("SELECT * FROM shipping_address WHERE address_id = #{addressId} AND cus_id = #{cusId}")
     ShippingAddress selectById(@Param("addressId") Integer addressId, @Param("cusId") Integer cusId);
+
+    @Select("SELECT * FROM shipping_address WHERE address_id = #{addressId}")
+    ShippingAddress getAddressById(@Param("addressId") Integer addressId);
 }

@@ -7,9 +7,10 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import { Menu } from 'antd';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom"; // 添加 useLocation
 import {useSelector} from "react-redux";
 import { jwtDecode } from 'jwt-decode';
+
 const baseItems = [
     {
         key: '',
@@ -22,7 +23,7 @@ const baseItems = [
         icon:<ShoppingCartOutlined />
     },
     {
-        key: 'orderDetails',
+        key: 'orderList',
         label: '订单详情',
         icon:<HistoryOutlined />
     },
@@ -49,26 +50,46 @@ const baseItems = [
 
 const TopBar = () => {
     const navigate = useNavigate();
+    const location = useLocation(); // 获取当前路由信息
     const [current, setCurrent] = useState('');
     const [menuItems, setMenuItems] = useState([]);
     const token = useSelector((state) => state.cus.token);
     const role = token ? jwtDecode(token).isAdmin : false;
+
+    // 根据路由初始化选中状态
+    useEffect(() => {
+        // 从路径中提取当前路由key (去掉开头的/)
+        const pathKey = location.pathname.substring(1);
+        // 检查是否是子菜单项
+        const isSubItem = menuItems.some(item =>
+            item.children?.some(child => child.key === pathKey)
+        );
+
+        // 如果是子菜单项，设置父菜单key为选中状态
+        if(isSubItem) {
+            const parentKey = menuItems.find(item =>
+                item.children?.some(child => child.key === pathKey)
+            )?.key;
+            setCurrent(parentKey);
+        } else {
+            setCurrent(pathKey);
+        }
+    }, [location.pathname, menuItems]);
+
     // 根据 role 动态更新菜单项
     useEffect(() => {
-        const updatedItems = [...baseItems]; // 复制初始菜单项
+        const updatedItems = [...baseItems];
         if (role) {
-            updatedItems.splice(1, 0, { // 插入“编辑商品”菜单项
+            updatedItems.splice(1, 0, {
                 key: 'adminEdit',
                 label: '编辑商品',
                 icon: <EditOutlined />
             });
         }
-        setMenuItems(updatedItems); // 更新菜单项状态
+        setMenuItems(updatedItems);
     }, [role]);
 
-    const onClick = (e) => {
-        console.log('click ', e);
-        // 如果点击的是“首页”，刷新页面
+    const onClick =(e) => {
         navigate(`/${e.key}`);
         setCurrent(e.key);
     };
@@ -81,8 +102,7 @@ const TopBar = () => {
                 mode="horizontal"
                 items={menuItems}
                 style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '10%' }}
-            >
-            </Menu>
+            />
         </div>
     );
 };

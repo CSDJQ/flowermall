@@ -1,0 +1,135 @@
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .sortOptions {
+    display: flex;
+    gap: 16px;
+    margin-left: 16px;
+
+    .sortOption {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #1890ff;
+      }
+    }
+  }
+}
+
+.orderGrid {
+  margin-top: 20px;
+}
+
+.orderCard {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+    min-height: 40px;
+
+    .deliveryTimeBadge {
+      background: #fff2f0;
+      border: 1px solid #ffccc7;
+      border-radius: 16px;
+      padding: 4px 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #f5222d;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .statusWrapper {
+      margin-right: 8px;
+    }
+  }
+
+  .cardContent {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .contentLeft {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .imageGroup {
+        display: flex;
+        gap: 12px;
+      }
+
+      .orderInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .orderText {
+          font-size: 13px;
+          line-height: 1.4;
+          color: #666;
+        }
+      }
+    }
+
+    .contentRight {
+      display: flex;
+      align-items: flex-start;
+      margin-left: 16px;
+
+      .orderSummary {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        text-align: right;
+
+        & > * {
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+
+  .cardFooter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+  }
+}

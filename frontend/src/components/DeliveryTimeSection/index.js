@@ -1,4 +1,3 @@
-// src/components/DeliveryTimeSection/DeliveryTimeSection.js
 import moment from "moment";
 import { useState } from "react";
 import { Card, Radio, Typography } from "antd";
@@ -54,7 +53,7 @@ const DeliveryTimeSection = ({ deliveryTime, setDeliveryTime }) => {
         <Card title="送达时间" className={style.deliveryTimeCard}>
             {/* 第一级：选择日期 */}
             <div style={{ marginBottom: 16 }}>
-                <Text strong style={{ display: 'block', marginBottom: 8 }}>选择日期</Text>
+                <Text strong className={style.deliveryTimeLabel}>选择日期</Text>
                 <Radio.Group
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
@@ -71,20 +70,20 @@ const DeliveryTimeSection = ({ deliveryTime, setDeliveryTime }) => {
             {/* 第二级：选择时间 */}
             {selectedDate && (
                 <div>
-                    <Text strong style={{ display: 'block', marginBottom: 8 }}>选择时间</Text>
+                    <Text strong className={style.deliveryTimeLabel}>选择时间</Text>
                     <Radio.Group
                         value={deliveryTime && deliveryTime.format('YYYY-MM-DD HH:mm')}
                         onChange={(e) => {
                             // 将字符串转换为 moment 对象
                             setDeliveryTime(moment(e.target.value));
                         }}
-                        style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
+                        className={style.antRadioGroup}
                     >
                         {generateTimeOptions(selectedDate).map(option => (
                             <Radio.Button
                                 key={option.value}
                                 value={option.value}
-                                style={{ marginBottom: 8 }}
+                                className={style.antRadioButtonWrapper}
                             >
                                 {option.label}
                             </Radio.Button>
@@ -93,7 +92,8 @@ const DeliveryTimeSection = ({ deliveryTime, setDeliveryTime }) => {
                 </div>
             )}
 
-            <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
+            <Text type="secondary" className={style.deliveryTimeNote}>
+                由于天气、路况等原因，送达时间上下浮动15分钟<br/>
                 最快1小时后送达，最晚可预约晚上10点
             </Text>
         </Card>

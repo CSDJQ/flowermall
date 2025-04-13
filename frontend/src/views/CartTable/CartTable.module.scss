@@ -12,6 +12,10 @@
   margin-bottom: 24px;
 }
 
+.actionBtn{
+  margin-bottom: 16px;
+}
+
 .addressCard {
   width: 100%;
   margin-bottom: 16px;
@@ -34,21 +38,12 @@
       }
     }
   }
-
-  .noAddress {
-    text-align: center;
-    padding: 16px;
-
-    .ant-typography {
-      color: #faad14;
-      margin-bottom: 12px;
-      display: block;
-    }
-  }
 }
 
 .cartTable {
   width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   .tableImage {
     width: 80px;
@@ -91,70 +86,6 @@
   }
 }
 
-.checkoutButton {
-  width: 200px;
-}
-
-.actionButtons {
-  margin-bottom: 16px;
-}
-
 .totalDivider {
   margin: 24px 0;
-}
-
-// 地址管理模态框样式
-.addressManager {
-  .addressList {
-    max-height: 400px;
-    overflow-y: auto;
-
-    .addressItem {
-      padding: 12px;
-      margin-bottom: 8px;
-      border: 1px solid #f0f0f0;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.3s;
-
-      &:hover {
-        border-color: #d9d9d9;
-      }
-
-      &.selected {
-        border-color: #1890ff;
-        background-color: #e6f7ff;
-      }
-
-      .addressInfo {
-        margin-bottom: 8px;
-
-        .phone {
-          margin-left: 12px;
-        }
-
-        .fullAddress {
-          color: #666;
-          margin-top: 4px;
-
-          .defaultTag {
-            margin-left: 8px;
-          }
-        }
-      }
-    }
-  }
-
-  .addressForm {
-    margin-top: 16px;
-  }
-
-  .emptyAddress {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    color: #999;
-  }
 }

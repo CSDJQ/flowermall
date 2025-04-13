@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card } from 'antd';
 import style from './Main.module.scss';
-import {useNavigate} from "react-router-dom";
-import {SmileOutlined} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { SmileOutlined } from "@ant-design/icons";
 
 const guideContents = [
     {
@@ -75,110 +75,67 @@ const Main = () => {
     const navigate = useNavigate();
 
     const handleCategoryClick = (parentKey, childKey) => {
-        // navigate(`/category/${parentKey}/${childKey}`);
-        // 跳转到分类页面
         navigate('/category', { state: { parentKey: parentKey, childKey: childKey } });
     };
 
     return (
-        <>
-            <Card
-                className={style.guide}
-                title="分类导购"
-                bordered={false}
-            >
+        <div className={style.container}>
+            {/* 分类导购卡片 */}
+            <Card className={style.guideCard} title="分类导购" bordered={false}>
                 {guideContents.map((item, index) => (
-                    <div key={index}>
+                    <div key={index} className={style.categoryGroup}>
                         <h4>{item.label}</h4>
-                        <div className={style.columns}> {/* 添加两列布局的类 */}
+                        <div className={style.categoryItems}>
                             {item.children.map((child, childIndex) => (
-                                <p key={childIndex} onClick={() => handleCategoryClick(item.key,child.label)}>
+                                <div
+                                    key={childIndex}
+                                    className={style.categoryItem}
+                                    onClick={() => handleCategoryClick(item.key, child.label)}
+                                >
                                     {child.label}
-                                </p>
+                                </div>
                             ))}
                         </div>
                     </div>
                 ))}
             </Card>
 
-            <div className={style.exguide}>
-                <div className={style.exguideTop}>
-                    <Card
-                        className={style.card1}
-                        title="特惠专区"
-                        bordered={false}
-                    >
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
+            {/* 右侧保留的卡片区域 */}
+            <div className={style.rightCards}>
+                {/* 上排两个卡片 */}
+                <div className={style.topRow}>
+                    <Card className={style.card2} bordered={false}>
+                        送恋人
                     </Card>
-
-                    <Card
-                        className={style.card1}
-                        title="热销榜单"
-                        bordered={false}
-                    >
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
+                    <Card className={style.card2} bordered={false}>
+                        送长辈
                     </Card>
                 </div>
-                <div className={style.exguideBottom}>
-                   <div className={style.exguideBottomLeft}>
-                       <Card
-                           className={style.card2}
-                           bordered={false}
-                       >
-                           送恋人
-                       </Card>
 
-                       <Card
-                           className={style.card2}
-                           bordered={false}
-                       >
-                           送长辈
-                       </Card>
-                   </div>
-                    <div className={style.exguideBottomMiddle}>
-                        <Card
-                            className={style.card3}
-                            bordered={false}
-                        >
-                          专属设计
-                        </Card>
-                    </div>
-                    <div className={style.exguideBottomRight}>
-                        <Card
-                            className={style.card5}
-                            bordered={false}
-                        >
-                            表白求婚
-                        </Card>
+                {/* 中间大卡片 */}
+                <div className={style.middleRow}>
+                    <Card className={style.card3} bordered={false}>
+                        专属设计
+                    </Card>
+                </div>
 
-                        <Card
-                            className={style.card5}
-                            bordered={false}
-                        >
-                            开业商务
-                        </Card>
-                        <Card
-                            className={style.card5}
-                            bordered={false}
-                        >
-                            后备箱
-                        </Card>
-                        <Card
-                            className={style.card5}
-                            bordered={false}
-                        >
-                            后备箱
-                        </Card>
-                    </div>
+                {/* 下排四个小卡片 */}
+                <div className={style.bottomRow}>
+                    <Card className={style.card5} bordered={false}>
+                        表白求婚
+                    </Card>
+                    <Card className={style.card5} bordered={false}>
+                        开业商务
+                    </Card>
+                    <Card className={style.card5} bordered={false}>
+                        后备箱
+                    </Card>
+                    <Card className={style.card5} bordered={false}>
+                        节日特供
+                    </Card>
                 </div>
             </div>
-
-
-        </>
+        </div>
     );
 }
 

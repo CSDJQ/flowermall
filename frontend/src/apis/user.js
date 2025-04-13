@@ -1,4 +1,3 @@
-// api.js
 import { request } from '@/utils';
 
 // 获取用户信息
