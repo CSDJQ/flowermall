@@ -186,8 +186,7 @@ const OrderList = () => {
                             {previewImages.map((image, index) => (
                                 <Image
                                     key={index}
-                                    width={80}
-                                    height={80}
+                                    className={style.image}
                                     src={image}
                                     alt="商品图片"
                                     preview={false}

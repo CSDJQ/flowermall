@@ -1,4 +1,9 @@
 import { request } from '@/utils';
+import { sha256 } from 'crypto-hash';
+
+const preprocessPassword = async (password) => {
+    return await sha256(password);
+};
 
 // 获取用户信息
 export const getUserInfo = async () => {
@@ -14,6 +19,10 @@ export const updateUserInfo = async (userInfo) => {
 
 // 修改密码
 export const changePassword = async (oldPassword, newPassword) => {
+
+    oldPassword = await preprocessPassword(oldPassword);
+    newPassword = await preprocessPassword(newPassword);
+
     return request.post('/user/updatePwd', { oldPassword, newPassword });
 };
 

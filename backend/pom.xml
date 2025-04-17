@@ -150,6 +150,22 @@
 			<artifactId>tencentcloud-sdk-java</artifactId>
 			<version>3.1.422</version>
 		</dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>3.1.0</version>
+		</dependency>
 
 	</dependencies>
 

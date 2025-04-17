@@ -13,7 +13,7 @@
   padding: 20px;
   background: #fff;
   border-radius: 8px;
-  height: 690px; /* 固定高度 */
+  height: 890px; /* 固定高度 */
   overflow-y: auto;
 
   .categoryGroup {
@@ -56,7 +56,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 650px; /* 与分类导购高度一致 */
+  height: 850px; /* 与分类导购高度一致 */
 }
 
 /* 上排两个卡片 */
@@ -71,12 +71,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
     border-radius: 8px;
     font-size: 18px;
     font-weight: 500;
     transition: all 0.3s;
     cursor: pointer;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* 设置背景颜色，背景图加载过程中会显示背景色 */
+    background-color: #464646;
 
     &:hover {
       transform: translateY(-5px);
@@ -95,12 +99,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
     border-radius: 8px;
     font-size: 20px;
     font-weight: 500;
     transition: all 0.3s;
     cursor: pointer;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* 设置背景颜色，背景图加载过程中会显示背景色 */
+    background-color: #464646;
 
     &:hover {
       transform: translateY(-5px);
@@ -122,12 +130,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 500;
     transition: all 0.3s;
     cursor: pointer;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* 设置背景颜色，背景图加载过程中会显示背景色 */
+    background-color: #464646;
 
     &:hover {
       transform: translateY(-5px);

@@ -1,6 +1,7 @@
 import { setToken } from "@/store/modules/cus";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import {clearTokenAutoRefresh} from "@/apis/auth";
 
 const Exit = () => {
     const dispatch = useDispatch();
@@ -8,6 +9,7 @@ const Exit = () => {
     useEffect(() => {
         dispatch(setToken(""));  // 清空 token
         localStorage.removeItem("token");  // 清除 token
+        clearTokenAutoRefresh();// 清空定时刷新token
         sessionStorage.clear();// 清空购物车
         window.location.reload();
     }, [dispatch]);  // 空依赖数组确保只在组件挂载时运行一次

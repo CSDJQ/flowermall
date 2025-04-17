@@ -35,4 +35,7 @@ public interface CusMapper {
 
     @Update("update customers set password = #{newPassword} where cus_id = #{userId}")
     void updatePassword(Integer userId, String newPassword);
+
+    @Select("select * from customers where phone = #{phone}")
+    Cus getCusByPhone(String phone);
 }

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/token")
+@RequestMapping("/token")
 public class TokenController {
 
     /**

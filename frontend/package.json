@@ -12,6 +12,7 @@
     "axios": "^1.7.9",
     "cos-js-sdk-v5": "^1.8.7",
     "cra-template": "1.2.0",
+    "crypto-hash": "^3.1.0",
     "css-select": "^5.1.0",
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",

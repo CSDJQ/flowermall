@@ -84,118 +84,69 @@ const AddressSelector = ({
         fetchAllAddresses();
     };
 
-    // 渲染地址选择区域
-    const renderAddressSection = () => (
-        <Card
-            className={style.addressCard}
-            title="收货地址"
-            extra={
-                <Button
-                    type="text"
-                    icon={<PlusOutlined />}
-                    onClick={() => {
-                        setAddressModalVisible(true);
-                        setIsEditingAddress(true);
-                        addressForm.resetFields();
-                    }}
-                >
-                    新增地址
-                </Button>
-            }
-        >
-            {selectedAddress ? (
-                <div className={style.selectedAddress}>
-                    <Text strong>{selectedAddress.receiverName}</Text>
-                    <Text className={style.phone}>{selectedAddress.receiverPhone}</Text>
-                    <div className={style.fullAddress}>
-                        {selectedAddress.district} {selectedAddress.detailedAddress}
-                        {selectedAddress.isDefault && (
-                            <Text className={style.defaultTag}>[默认]</Text>
-                        )}
-                    </div>
-                    <Button
-                        type="link"
-                        onClick={handleOpenAddressModal}
-                    >
-                        更改地址
-                    </Button>
-                </div>
-            ) : (
-                <div className={style.noAddress}>
-                    <Text>请选择收货地址</Text>
-                    <Button
-                        type="primary"
-                        onClick={handleOpenAddressModal}
-                    >
-                        选择地址
-                    </Button>
-                </div>
-            )}
-        </Card>
-    );
-
     // 地址管理模态框内容
-    const renderAddressManager = () => (
-        <div className={style.addressManager}>
-            <Tabs
-                activeKey={isEditingAddress ? "add" : "select"}
-                onChange={(key) => setIsEditingAddress(key === 'add')}
-            >
-                <Tabs.TabPane tab="选择地址" key="select">
-                    {loadingAddresses ? (
-                        <div style={{ textAlign: 'center', padding: '24px' }}>
-                            <Text type="secondary">加载地址中...</Text>
-                        </div>
-                    ) : addresses.length === 0 ? (
-                        <div className={style.emptyAddress}>
-                            <Text type="secondary">暂无地址，请添加新地址</Text>
-                            <Button
-                                type="primary"
-                                onClick={() => setIsEditingAddress(true)}
+    const renderAddressManager = () => {
+        const tabItems = [
+            {
+                key: 'select',
+                label: '选择地址',
+                children: loadingAddresses ? (
+                    <div style={{ textAlign: 'center', padding: '24px' }}>
+                        <Text type="secondary">加载地址中...</Text>
+                    </div>
+                ) : addresses.length === 0 ? (
+                    <div className={style.emptyAddress}>
+                        <Text type="secondary">暂无地址，请添加新地址</Text>
+                        <Button
+                            type="primary"
+                            onClick={() => setIsEditingAddress(true)}
+                        >
+                            <PlusOutlined /> 添加地址
+                        </Button>
+                    </div>
+                ) : (
+                    <div className={style.addressList}>
+                        {addresses.map(address => (
+                            <div
+                                key={address.addressId}
+                                className={`${style.addressItem} ${selectedAddress?.addressId === address.addressId ? style.selected : ''}`}
+                                onClick={() => {
+                                    setSelectedAddress(address);
+                                    setAddressModalVisible(false);
+                                }}
                             >
-                                <PlusOutlined /> 添加地址
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className={style.addressList}>
-                            {addresses.map(address => (
-                                <div
-                                    key={address.addressId}
-                                    className={`${style.addressItem} ${selectedAddress?.addressId === address.addressId ? style.selected : ''}`}
-                                    onClick={() => {
-                                        setSelectedAddress(address);
-                                        setAddressModalVisible(false);
-                                    }}
-                                >
-                                    <div className={style.addressInfo}>
-                                        <Text strong>{address.receiverName}</Text>
-                                        <Text className={style.phone}>{address.receiverPhone}</Text>
-                                        <div className={style.fullAddress}>
-                                            {address.district} {address.detailedAddress}
-                                            {address.isDefault && (
-                                                <Text className={style.defaultTag}>[默认]</Text>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <Space>
-                                        {!address.isDefault && (
-                                            <Button
-                                                type="link"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleSetDefault(address.addressId);
-                                                }}
-                                            >
-                                                设为默认
-                                            </Button>
+                                <div className={style.addressInfo}>
+                                    <Text strong>{address.receiverName}</Text>
+                                    <Text className={style.phone}>{address.receiverPhone}</Text>
+                                    <div className={style.fullAddress}>
+                                        {address.district} {address.detailedAddress}
+                                        {address.isDefault && (
+                                            <Text className={style.defaultTag}>[默认]</Text>
                                         )}
-                                    </Space>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
-                    )}
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="新增地址" key="add">
+                                <Space>
+                                    {!address.isDefault && (
+                                        <Button
+                                            type="link"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleSetDefault(address.addressId);
+                                            }}
+                                        >
+                                            设为默认
+                                        </Button>
+                                    )}
+                                </Space>
+                            </div>
+                        ))}
+                    </div>
+                )
+            },
+            {
+                key: 'add',
+                label: '新增地址',
+                children: (
                     <Form form={addressForm} layout="vertical" className={style.addressForm}>
                         <Form.Item
                             name="receiverName"
@@ -252,9 +203,69 @@ const AddressSelector = ({
                             </Space>
                         </Form.Item>
                     </Form>
-                </Tabs.TabPane>
-            </Tabs>
-        </div>
+                )
+            }
+        ];
+
+        return (
+            <div className={style.addressManager}>
+                <Tabs
+                    activeKey={isEditingAddress ? "add" : "select"}
+                    onChange={(key) => setIsEditingAddress(key === 'add')}
+                    items={tabItems}
+                />
+            </div>
+        );
+    };
+
+    // 渲染地址选择区域
+    const renderAddressSection = () => (
+        <Card
+            className={style.addressCard}
+            title="收货地址"
+            extra={
+                <Button
+                    type="text"
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                        setAddressModalVisible(true);
+                        setIsEditingAddress(true);
+                        addressForm.resetFields();
+                    }}
+                >
+                    新增地址
+                </Button>
+            }
+        >
+            {selectedAddress ? (
+                <div className={style.selectedAddress}>
+                    <Text strong>{selectedAddress.receiverName}</Text>
+                    <Text className={style.phone}>{selectedAddress.receiverPhone}</Text>
+                    <div className={style.fullAddress}>
+                        {selectedAddress.district} {selectedAddress.detailedAddress}
+                        {selectedAddress.isDefault && (
+                            <Text className={style.defaultTag}>[默认]</Text>
+                        )}
+                    </div>
+                    <Button
+                        type="link"
+                        onClick={handleOpenAddressModal}
+                    >
+                        更改地址
+                    </Button>
+                </div>
+            ) : (
+                <div className={style.noAddress}>
+                    <Text>请选择收货地址</Text>
+                    <Button
+                        type="primary"
+                        onClick={handleOpenAddressModal}
+                    >
+                        选择地址
+                    </Button>
+                </div>
+            )}
+        </Card>
     );
 
     return (

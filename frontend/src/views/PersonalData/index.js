@@ -396,7 +396,7 @@ const PersonalData = () => {
 
             <Modal
                 title={editingAddress ? '编辑收货地址' : '添加收货地址'}
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={editingAddress ? handleUpdateAddress : handleAddAddress}
                 onCancel={() => {
                     setIsModalVisible(false);
@@ -405,6 +405,7 @@ const PersonalData = () => {
                 }}
                 confirmLoading={loading.addressAction}
                 destroyOnClose
+                forceRender
             >
                 <Form form={addressForm} layout="vertical">
                     <Form.Item

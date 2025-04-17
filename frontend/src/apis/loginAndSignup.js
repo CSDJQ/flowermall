@@ -1,39 +1,54 @@
-import {request} from "../utils";
+import { request } from "../utils";
+import { setupTokenAutoRefresh } from "./auth";
+import { sha256 } from 'crypto-hash';
+
+const preprocessPassword = async (password) => {
+    return await sha256(password);
+};
 
 const fetchLogin = async (values) => {
     try {
-        const response = await request.post('/login', values);  // 使用 await 等待请求结果
-        // 请求成功
+        // SHA256预处理密码，避免明文传输
+        const processedValues = {
+            ...values,
+            password: await preprocessPassword(values.password)
+        };
+
+        const response = await request.post('/login', processedValues);
+
         if (response.code === 200) {
-            return { success: true, data: response.data };  // 返回成功结果
+            setupTokenAutoRefresh(); // 开启定时刷新
+            return { success: true, data: response.data };
         } else {
-            return { success: false, errorMsg: response.msg };  // 返回失败信息
+            return { success: false, errorMsg: response.msg };
         }
     } catch (error) {
-        // 请求失败时的错误处理
         console.error('Login failed:', error.response ? error.response.data : error.message);
         alert(error.response ? error.response.data.message : error.message);
-        return { success: false, errorMsg: error.message };  // 返回错误信息
+        return { success: false, errorMsg: error.message };
     }
 };
 
 const fetchSignup = async (values) => {
     try {
-        // 发起注册请求并等待结果
-        const response = await request.post('/signup', values);
+        // SHA256预处理密码
+        const processedValues = {
+            ...values,
+            password: await preprocessPassword(values.password)
+        };
 
-        // 判断请求是否成功
+        const response = await request.post('/signup', processedValues);
+
         if (response.code === 200) {
-            return { success: true, data: response };  // 返回成功结果
+            return { success: true, data: response };
         } else {
-            return { success: false, errorMsg: response.msg };  // 返回失败信息
+            return { success: false, errorMsg: response.msg };
         }
     } catch (error) {
-        // 请求失败时的错误处理
         alert(error.response ? error.response.data.message : error.message);
         console.error('Signup failed:', error.response ? error.response.data : error.message);
-        return { success: false, errorMsg: error.message };  // 返回错误信息
+        return { success: false, errorMsg: error.message };
     }
 }
 
-export {fetchLogin, fetchSignup}
+export { fetchLogin, fetchSignup }

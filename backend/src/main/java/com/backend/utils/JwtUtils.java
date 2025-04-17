@@ -5,7 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class JwtUtils {
 
     private static String signKey = "example";

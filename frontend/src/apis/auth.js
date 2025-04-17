@@ -10,7 +10,7 @@ export const validateToken = async (token) => {
     }
 
     try {
-        const response = await request.get('/api/token/validate'); // 调用验证接口
+        const response = await request.get('/token/validate'); // 调用验证接口
         return response.code === 200; // 如果返回 200，说明 Token 有效
     } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -24,22 +24,45 @@ export const validateToken = async (token) => {
 
 /**
  * 刷新 Token
- * @returns {Promise<string|null>} 新的 Token，如果刷新失败返回 null
+ * @returns {Promise<string|null>} 新的 Token
  */
+let remainingRefreshCount = 3; // 初始允许刷新3次
+
 export const refreshToken = async () => {
-
-};
-
-/**
- * 检查 Token 是否有效，如果无效尝试刷新 Token
- * @returns {Promise<boolean>} 是否有效
- */
-export const checkAndRefreshToken = async (token) => {
-    const isValid = await validateToken(token); // 验证 Token 是否有效
-    if (isValid) {
-        return true; // 如果有效，直接返回 true
+    if (remainingRefreshCount <= 0) {
+        clearTokenAutoRefresh();
+        return null;
     }
 
-    const newToken = await refreshToken(); // 尝试刷新 Token
-    return !!newToken; // 如果刷新成功，返回 true；否则返回 false
-};
+    try {
+        const response = await request.get('/token/refresh');
+        if (response.code === 200) {
+            remainingRefreshCount--; // 减少剩余次数
+            return response.data;
+        }
+    } catch (error) {
+        console.error("刷新 Token 失败:", error);
+        return null;
+    }
+}
+
+// 添加定时刷新逻辑（后端12小时有效期，11小时后刷新）
+const REFRESH_INTERVAL = 11 * 60 * 60 * 1000; // 11小时
+let refreshTimer = null;
+
+export const setupTokenAutoRefresh = () => {
+    if (refreshTimer) clearInterval(refreshTimer);
+
+    refreshTimer = setInterval(async () => {
+        if (await validateToken()) {
+            await refreshToken();
+        }
+    }, REFRESH_INTERVAL);
+}
+
+export const clearTokenAutoRefresh = () => {
+    if (refreshTimer) {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
+    }
+}

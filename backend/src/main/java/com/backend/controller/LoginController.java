@@ -16,6 +16,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 public class LoginController {
+
     String ADMINPHONE = "12345678910";
 
     @Autowired
@@ -31,29 +32,26 @@ public class LoginController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", c.getCusId());
 
-            // 判断是否是管理员
             boolean isAdmin = ADMINPHONE.equals(c.getPhone());
-            claims.put("isAdmin", isAdmin); // 将角色信息添加到 JWT
+            claims.put("isAdmin", isAdmin);
 
             String jwt = JwtUtils.generateJwt(claims);
-
             log.info("response: {}", jwt);
 
-            return Result.success(jwt); // 使用 Result.success 返回
+            return Result.success(jwt);
         }
         return Result.error("手机号或密码错误");
     }
 
     @PostMapping("/signup")
     public Result signup(@RequestBody Cus cus) {
-        log.info("注册请求，request:{}",cus);
+        log.info("注册请求，request:{}", cus);
 
         boolean ifSignup = cusService.signup(cus);
 
-        if(ifSignup){
+        if(ifSignup) {
             return Result.success("注册成功");
         }
         return Result.error("注册失败，手机号已被注册");
     }
 }
-

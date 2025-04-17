@@ -92,6 +92,11 @@
       .imageGroup {
         display: flex;
         gap: 12px;
+        .image{
+          width: 80px;
+          height: 80px;
+          border-radius: 8px;
+        }
       }
 
       .orderInfo {

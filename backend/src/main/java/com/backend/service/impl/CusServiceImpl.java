@@ -1,12 +1,11 @@
 package com.backend.service.impl;
 
-
 import com.backend.mapper.CusMapper;
 import com.backend.pojo.Cus;
 import com.backend.service.CusService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,20 +14,27 @@ public class CusServiceImpl implements CusService {
     @Autowired
     private CusMapper cusMapper;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @Override
     public Cus login(Cus cus) {
-        return cusMapper.getCusByPhoneAndPWD(cus);
+        Cus dbCus = cusMapper.getCusByPhone(cus.getPhone());
+        // 前端传的是 SHA256，需用 BCrypt 验证数据库中的哈希
+        if (dbCus != null && passwordEncoder.matches(cus.getPassword(), dbCus.getPassword())) {
+            return dbCus;
+        }
+        return null;
     }
 
     @Override
     public boolean signup(Cus cus) {
-        // 手机号是否已注册
-        if(cusMapper.getUserByPhone(cus.getPhone())==null){
-            // 未注册
+        if (cusMapper.getUserByPhone(cus.getPhone()) == null) {
+            // 对前端传来的 SHA256 值再做 BCrypt 哈希
+            String bcryptHash = passwordEncoder.encode(cus.getPassword());
+            cus.setPassword(bcryptHash);
             cusMapper.addCus(cus);
             return true;
         }
-        // 手机号冲突
         return false;
     }
 
@@ -51,18 +57,16 @@ public class CusServiceImpl implements CusService {
 
     @Override
     public boolean verifyPassword(Integer userId, String password) {
-        // 获取用户当前密码(加密后的)
+        // 前端传的是 SHA256
         String currentPassword = cusMapper.getPasswordById(userId);
-        // 验证密码是否匹配
-        return password.equals(currentPassword);
+        return passwordEncoder.matches(password, currentPassword);
     }
 
     @Override
     public void updatePassword(Integer userId, String newPassword) {
-        // 对新密码进行加密
-        cusMapper.updatePassword(userId, newPassword);
-
-        // 记录密码修改日志
+        // 前端传的是 SHA256，需要再次BCrypt加密
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        cusMapper.updatePassword(userId, encodedPassword);
         log.info("用户ID {} 修改了密码", userId);
     }
 }

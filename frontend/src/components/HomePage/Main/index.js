@@ -9,65 +9,25 @@ const guideContents = [
         key: 'purpose',
         icon: <SmileOutlined />,
         label: '用途',
-        children: [
-            { key: '爱情鲜花', label: '爱情鲜花' },
-            { key: '友情鲜花', label: '友情鲜花' },
-            { key: '生日鲜花', label: '生日鲜花' },
-            { key: '长辈亲戚', label: '长辈亲戚' },
-            { key: '师恩难忘', label: '师恩难忘' },
-            { key: '祝贺鲜花', label: '祝贺鲜花' },
-            { key: '哀思鲜花', label: '哀思鲜花' },
-            { key: '商务桌花', label: '商务桌花' },
-            { key: '开业花篮', label: '开业花篮' },
-        ],
+        children: ['爱情鲜花', '友情鲜花', '生日鲜花', '长辈亲戚', '师恩难忘', '祝贺鲜花', '哀思鲜花', '商务桌花', '开业花篮'],
     },
     {
         key: 'mainFlower',
         icon: <SmileOutlined />,
         label: '主花',
-        children: [
-            { key: '红玫瑰', label: '红玫瑰' },
-            { key: '粉玫瑰', label: '粉玫瑰' },
-            { key: '白玫瑰', label: '白玫瑰' },
-            { key: '香槟玫瑰', label: '香槟玫瑰' },
-            { key: '康乃馨', label: '康乃馨' },
-            { key: '百合', label: '百合' },
-            { key: '向日葵', label: '向日葵' },
-            { key: '绣球花', label: '绣球花' },
-            { key: '其他', label: '其他' },
-        ],
+        children: ['红玫瑰', '粉玫瑰', '白玫瑰', '香槟玫瑰', '康乃馨', '百合', '向日葵', '绣球花', '其他'],
     },
     {
         key: 'colorScheme',
         icon: <SmileOutlined />,
         label: '色系',
-        children: [
-            { key: '红色', label: '红色' },
-            { key: '粉色', label: '粉色' },
-            { key: '香槟', label: '香槟' },
-            { key: '黄色', label: '黄色' },
-            { key: '白色', label: '白色' },
-            { key: '紫色', label: '紫色' },
-            { key: '蓝色', label: '蓝色' },
-            { key: '绿色', label: '绿色' },
-            { key: '其他色系', label: '其他色系' },
-        ],
+        children: ['红色', '粉色', '香槟', '黄色', '白色', '紫色', '蓝色', '绿色', '其他色系'],
     },
     {
         key: 'stemCount',
         icon: <SmileOutlined />,
         label: '支数',
-        children: [
-            { key: '6枝', label: '6枝' },
-            { key: '9枝', label: '9枝' },
-            { key: '11枝', label: '11枝' },
-            { key: '19枝', label: '19枝' },
-            { key: '33枝', label: '33枝' },
-            { key: '52枝', label: '52枝' },
-            { key: '66枝', label: '66枝' },
-            { key: '99枝', label: '99枝' },
-            { key: '199枝', label: '199枝' },
-        ],
+        children: ['6枝', '9枝', '11枝', '19枝', '33枝', '52枝', '66枝', '99枝', '199枝'],
     },
 ];
 
@@ -75,24 +35,27 @@ const Main = () => {
     const navigate = useNavigate();
 
     const handleCategoryClick = (parentKey, childKey) => {
-        navigate('/category', { state: { parentKey: parentKey, childKey: childKey } });
+        navigate('/category', { state: { parentKey, childKey } });
     };
 
     return (
         <div className={style.container}>
             {/* 分类导购卡片 */}
-            <Card className={style.guideCard} title="分类导购" bordered={false}>
-                {guideContents.map((item, index) => (
-                    <div key={index} className={style.categoryGroup}>
+            <Card
+                className={style.guideCard}
+                title="分类导购"
+            >
+                {guideContents.map((item) => (
+                    <div key={item.key} className={style.categoryGroup}>
                         <h4>{item.label}</h4>
                         <div className={style.categoryItems}>
-                            {item.children.map((child, childIndex) => (
+                            {item.children.map((child) => (
                                 <div
-                                    key={childIndex}
+                                    key={child}
                                     className={style.categoryItem}
-                                    onClick={() => handleCategoryClick(item.key, child.label)}
+                                    onClick={() => handleCategoryClick(item.key, child)}
                                 >
-                                    {child.label}
+                                    {child}
                                 </div>
                             ))}
                         </div>
@@ -104,34 +67,55 @@ const Main = () => {
             <div className={style.rightCards}>
                 {/* 上排两个卡片 */}
                 <div className={style.topRow}>
-                    <Card className={style.card2} bordered={false}>
-                        送恋人
+                    <Card
+                        className={style.card2}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Flianren.png')" }}
+                        onClick={() => handleCategoryClick('purpose', '爱情鲜花')}
+                    >
                     </Card>
-                    <Card className={style.card2} bordered={false}>
-                        送长辈
+                    <Card
+                        className={style.card2}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fzhangbei.png')" }}
+                        onClick={() => handleCategoryClick('purpose', '长辈亲戚')}
+                    >
                     </Card>
                 </div>
 
                 {/* 中间大卡片 */}
                 <div className={style.middleRow}>
-                    <Card className={style.card3} bordered={false}>
-                        专属设计
+                    <Card
+                        className={style.card3}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fxiaozhushou.png')"}}
+                        onClick={() => handleCategoryClick('purpose', '商务桌花')}
+                    >
                     </Card>
                 </div>
 
                 {/* 下排四个小卡片 */}
                 <div className={style.bottomRow}>
-                    <Card className={style.card5} bordered={false}>
-                        表白求婚
+                    <Card
+                        className={style.card5}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fbiaobaiqiuhun.png')" }}
+                        onClick={() => handleCategoryClick('purpose', '爱情鲜花')}
+                    >
                     </Card>
-                    <Card className={style.card5} bordered={false}>
-                        开业商务
+                    <Card
+                        className={style.card5}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fshengrijingxi.png')" }}
+                        onClick={() => handleCategoryClick('purpose', '生日鲜花')}
+                    >
                     </Card>
-                    <Card className={style.card5} bordered={false}>
-                        后备箱
+                    <Card
+                        className={style.card5}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fyouqingjianzheng.png')" }}
+                        onClick={() => handleCategoryClick('purpose', '友情鲜花')}
+                    >
                     </Card>
-                    <Card className={style.card5} bordered={false}>
-                        节日特供
+                    <Card
+                        className={style.card5}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fkaiyedaji.png')" }}
+                        onClick={() => handleCategoryClick('purpose', '开业花篮')}
+                    >
                     </Card>
                 </div>
             </div>
