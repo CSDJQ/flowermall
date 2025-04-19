@@ -69,13 +69,13 @@ const Main = () => {
                 <div className={style.topRow}>
                     <Card
                         className={style.card2}
-                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Flianren.png')" }}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/lianren.png')" }}
                         onClick={() => handleCategoryClick('purpose', '爱情鲜花')}
                     >
                     </Card>
                     <Card
                         className={style.card2}
-                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fzhangbei.png')" }}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/zhangbei.png')" }}
                         onClick={() => handleCategoryClick('purpose', '长辈亲戚')}
                     >
                     </Card>
@@ -85,7 +85,7 @@ const Main = () => {
                 <div className={style.middleRow}>
                     <Card
                         className={style.card3}
-                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fxiaozhushou.png')"}}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/xiaozhushou.png')"}}
                         onClick={() => handleCategoryClick('purpose', '商务桌花')}
                     >
                     </Card>
@@ -95,25 +95,25 @@ const Main = () => {
                 <div className={style.bottomRow}>
                     <Card
                         className={style.card5}
-                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fbiaobaiqiuhun.png')" }}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/biaobaiqiuhun.png')" }}
                         onClick={() => handleCategoryClick('purpose', '爱情鲜花')}
                     >
                     </Card>
                     <Card
                         className={style.card5}
-                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fshengrijingxi.png')" }}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/shengrijingxi.png')" }}
                         onClick={() => handleCategoryClick('purpose', '生日鲜花')}
                     >
                     </Card>
                     <Card
                         className={style.card5}
-                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fyouqingjianzheng.png')" }}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/youqingjianzheng.png')" }}
                         onClick={() => handleCategoryClick('purpose', '友情鲜花')}
                     >
                     </Card>
                     <Card
                         className={style.card5}
-                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background%2Fkaiyedaji.png')" }}
+                        style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/kaiyedaji.png')" }}
                         onClick={() => handleCategoryClick('purpose', '开业花篮')}
                     >
                     </Card>

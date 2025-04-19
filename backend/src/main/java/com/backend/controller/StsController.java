@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sts")
 public class StsController {
+    // 腾讯云COS的token
 
     @Value("${tencent.cloud.secretId}")
     private String secretId;
@@ -54,7 +55,6 @@ public class StsController {
         // 发送请求并获取响应
         GetFederationTokenResponse response = client.GetFederationToken(req);
 
-        // 将 GetFederationTokenResponse 转换为自定义的 StsTokenResponse
         return new StsTokenResponse(
                 response.getExpiration(),
                 response.getRequestId(),

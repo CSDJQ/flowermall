@@ -20,6 +20,7 @@ public class AIController {
     @PostMapping("/ask")
     public ResponseEntity<String> askQuestion(@RequestBody Map<String, String> request) {
         try {
+            log.info("AI请求：{}", request);
             String answer = ollamaService.generateResponse(request.get("input"));
             log.info("AI响应：{}", answer);
             return ResponseEntity.ok(answer);
