@@ -1,6 +1,6 @@
 package com.backend.controller;
 
-import com.backend.service.OllamaService;
+import com.backend.service.DeepSeekService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +15,13 @@ import java.util.Map;
 @RequestMapping("/ai")
 public class AIController {
     @Autowired
-    private OllamaService ollamaService;
+    private DeepSeekService deepSeekService; // 修改服务引用
 
     @PostMapping("/ask")
     public ResponseEntity<String> askQuestion(@RequestBody Map<String, String> request) {
         try {
             log.info("AI请求：{}", request);
-            String answer = ollamaService.generateResponse(request.get("input"));
+            String answer = deepSeekService.generateResponse(request.get("input")); // 修改方法调用
             log.info("AI响应：{}", answer);
             return ResponseEntity.ok(answer);
         } catch (Exception e) {

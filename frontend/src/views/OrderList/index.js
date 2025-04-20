@@ -11,7 +11,7 @@ import {
     SyncOutlined,
     CheckCircleOutlined,
     TruckOutlined,
-    CarOutlined
+    CarOutlined, ArrowLeftOutlined
 } from '@ant-design/icons';
 import { getOrders, updateOrderStatus } from '@/apis/order';
 import { useNavigate } from 'react-router-dom';

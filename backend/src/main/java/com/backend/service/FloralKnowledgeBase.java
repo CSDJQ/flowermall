@@ -5,10 +5,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 @Component
 public class FloralKnowledgeBase {
@@ -22,16 +23,12 @@ public class FloralKnowledgeBase {
     @PostConstruct
     public void init() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        String content = new String(Files.readAllBytes(knowledgeFile.getFile().toPath()));
-        Map<String, Map<String, String>> knowledge = mapper.readValue(content, Map.class);
-
-        this.flowerMeanings = knowledge.get("flowerMeanings");
-        this.occasionAdvice = knowledge.get("occasionAdvice");
-        this.recipientAdvice = knowledge.get("recipientAdvice");
-    }
-
-    public String getFlowerMeaning(String flower) {
-        return flowerMeanings.getOrDefault(flower, "暂无此花的花语信息，请联网搜索");
+        try (InputStream inputStream = knowledgeFile.getInputStream()) {
+            Map<String, Map<String, String>> knowledge = mapper.readValue(inputStream, new TypeReference<Map<String, Map<String, String>>>() {});
+            this.flowerMeanings = knowledge.getOrDefault("花材库", new HashMap<>());
+            this.occasionAdvice = knowledge.getOrDefault("场景", new HashMap<>());
+            this.recipientAdvice = knowledge.getOrDefault("收花人", new HashMap<>());
+        }
     }
 
     public Map<String, String> getAllFlowerMeaning() {
@@ -39,11 +36,11 @@ public class FloralKnowledgeBase {
     }
 
     public String getOccasionAdvice(String occasion) {
-        return occasionAdvice.getOrDefault(occasion, "通用场合：混合花束，色彩协调即可");
+        return occasionAdvice.getOrDefault(occasion, "通用场合,色彩协调即可");
     }
 
     public String getRecipientAdvice(String recipient) {
-        return recipientAdvice.getOrDefault(recipient, "通用建议：根据收花人的喜好选择花材");
+        return recipientAdvice.getOrDefault(recipient, "根据收花人的喜好和风格选择花材");
     }
 
 }

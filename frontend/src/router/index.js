@@ -5,14 +5,14 @@ import Home from "@/views/Home";
 import {AuthRoute} from "@/components/AuthRoute";
 import CategoryPage from "@/components/CategoryPage";
 import MyLayout from "@/components/MyLayout";
-import AdminEdit from "../views/AdminEdit";
-import Exit from "../views/Exit";
-import Chat from "../components/Chat";
+import AdminEdit from "@/views/AdminEdit";
+import Exit from "@/views/Exit";
+import Chat from "@/views/Chat";
 import CartTable from "@/views/CartTable";
 import PersonalData from "@/views/PersonalData";
 import ModifyPwd from "@/views/ModifyPwd";
 import OrderList from "@/views/OrderList";
-import OrderDetail from "@/views/OrderDetail";
+import OrderDetail from "@/components/OrderDetail";
 
 const router = createBrowserRouter([
     {

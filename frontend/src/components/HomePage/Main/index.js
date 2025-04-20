@@ -63,7 +63,7 @@ const Main = () => {
                 ))}
             </Card>
 
-            {/* 右侧保留的卡片区域 */}
+            {/* 右侧卡片区域 */}
             <div className={style.rightCards}>
                 {/* 上排两个卡片 */}
                 <div className={style.topRow}>
@@ -86,7 +86,7 @@ const Main = () => {
                     <Card
                         className={style.card3}
                         style={{ backgroundImage: "url('https://flower-1346990013.cos.ap-guangzhou.myqcloud.com/background/xiaozhushou.png')"}}
-                        onClick={() => handleCategoryClick('purpose', '商务桌花')}
+                        onClick={() => navigate('/chat')}
                     >
                     </Card>
                 </div>
